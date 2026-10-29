@@ -1,0 +1,16 @@
+# 用户数据（可随 data/ 目录整体迁移）
+data/
+
+# 根目录运行产物（已全部收敛到 data/raw|logs；以下为历史遗留防护）
+commands/
+results/
+logs/
+--path
+
+# 独立调试 Chrome 的 profile（含登录态与浏览器缓存，体积巨大，绝不入库）
+.chrome-boss-profile/
+.chrome-raw-profile/
+
+# Python 缓存
+__pycache__/
+*.pyc

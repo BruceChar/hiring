@@ -1,0 +1,39 @@
+{
+  "name": "",
+  "title": "",
+  "phone": "",
+  "email": "",
+  "city": "",
+  "years": null,
+  "github": "",
+  "summary": "",
+  "education": [],
+  "experiences": [],
+  "projects": [],
+  "skills": [],
+  "_note": "技能条目字段：{name, group(professional|tools|soft|credentials), cluster, evidenceLevel(0-5), projectRefs[], metrics[], statement, scenario}。projectRefs 必须引用 projects/experiences 里的名字（账实相符）",
+  "schemaVersion": 3,
+  "skillEnvironment": "日常工作环境：",
+  "skillGroups": {
+    "professional": "专业技能：可验证的方法与领域能力",
+    "tools": "工具与技术栈：语言 / 框架 / 数据库 / 中间件 / 云与 DevOps",
+    "soft": "通用能力：通过经历 bullet 证明，确需列出时带场景且不超过 5 条",
+    "credentials": "语言与资质：外语等级、证书、执照（按含金量降序）"
+  },
+  "evidencePyramid": {
+    "5": "可量化的项目结果",
+    "4": "规模 / 复杂度上下文",
+    "3": "角色与职责",
+    "2": "外部验证",
+    "1": "时长与频率",
+    "0": "证书 / 课程"
+  },
+  "targets": [
+    {
+      "id": "t1",
+      "title": "",
+      "note": ""
+    }
+  ],
+  "activeTarget": "t1"
+}

@@ -1,0 +1,3639 @@
+{
+  "version": 1,
+  "families": [
+    "AI/Agent 应用工程师"
+  ],
+  "domains": [
+    {
+      "name": "Agent 与编排",
+      "skills": [
+        {
+          "name": "Agent Harness 与运行时架构",
+          "aliases": [
+            "Agent Harness",
+            "Harness",
+            "Agent运行时",
+            "agent runtime",
+            "运行时框架",
+            "智能体框架",
+            "agent framework",
+            "Agent 架构",
+            "Agent基座"
+          ],
+          "importance": 5,
+          "learn": {
+            "why": "岗位族真正在招的不是「会调 API 的人」，而是能把模型、工具、记忆、预算、权限组装成一套可长期演进的运行时的人。",
+            "focus": "掌握一次 Agent 调用的完整生命周期（Goal→Task→Step→Tool→Observation→终止判定）以及各环节的可插拔设计。",
+            "steps": [
+              "读一个成熟 harness 的源码主干（如 OpenAI Agents SDK 或 LangGraph 的 agent loop），画出它的循环状态机与终止条件",
+              "用 300 行以内手写一个最小 harness：支持 system prompt 组装、工具注册、多轮循环、最大步数与超时中断",
+              "在自己的 harness 上补齐可观测埋点（每步 token 数、耗时、工具入参出参）与预算熔断，并写一份架构说明文档"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "OpenAI Agents SDK 官方文档（Agents/Handoffs/Guardrails 章节）",
+                "url": "https://openai.github.io/openai-agents-python/"
+              },
+              {
+                "type": "开源项目",
+                "name": "LangGraph 仓库（Pregel 执行引擎与 checkpointer 实现）",
+                "url": "https://langchain-ai.github.io/langgraph/"
+              },
+              {
+                "type": "实践",
+                "name": "在 GitHub 上发布一个自研 harness 最小实现（README 含架构图）"
+              }
+            ],
+            "duration": "3-4 周",
+            "verification": "开源一个可运行的 harness 仓库：能跑通一个带 3 个工具的多步任务，并输出逐步 trace 与 token 成本报表。"
+          }
+        },
+        {
+          "name": "多 Agent 编排",
+          "aliases": [
+            "多Agent",
+            "多智能体",
+            "multi-agent",
+            "Multi Agent",
+            "Agent协作",
+            "Agent 协作",
+            "多Agent协作",
+            "MultiAgent",
+            "智能体协作"
+          ],
+          "importance": 5,
+          "learn": {
+            "why": "复杂业务无法靠单体 Agent 完成，JD 里高频出现「多 Agent 协作」「职责拆分」「上下文隔离」，考察的是拆分与仲裁能力。",
+            "focus": "学会按职责与上下文边界拆分角色，并设计消息传递、仲裁与冲突消解机制。",
+            "steps": [
+              "实现三种拓扑各一次：Supervisor（主管派活）、Pipeline（流水线）、Debate（多角色辩论）",
+              "为每个角色定义最小上下文契约（输入 schema、可访问工具、输出 schema），验证上下文隔离能抑制幻觉扩散",
+              "引入裁决者（Judge）与失败回退路径，用同一任务对比单 Agent 与多 Agent 的成功率与 token 成本"
+            ],
+            "resources": [
+              {
+                "type": "开源项目",
+                "name": "LangGraph 多 Agent 教程（Multi-agent collaboration 篇章）",
+                "url": "https://langchain-ai.github.io/langgraph/"
+              },
+              {
+                "type": "论文",
+                "name": "AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation（Microsoft, 2023）"
+              },
+              {
+                "type": "开源项目",
+                "name": "CrewAI 仓库（role/goal/backstory 角色抽象）"
+              }
+            ],
+            "duration": "2-3 周",
+            "verification": "产出一个多 Agent 系统的对比实验报告：同一任务下单 Agent 与多 Agent 的成功率、平均步数、token 成本对照表。"
+          }
+        },
+        {
+          "name": "工具调用 / Function Calling",
+          "aliases": [
+            "Function Calling",
+            "工具调用",
+            "tool use",
+            "function call",
+            "函数调用",
+            "Tool Calling",
+            "工具使用",
+            "插件调用"
+          ],
+          "importance": 5,
+          "learn": {
+            "why": "Agent 的产出上限由工具箱决定，JD 直接写「建设 agent 工具集，把模型真正需要的能力交到它手上」。",
+            "focus": "把业务能力封装成模型易用、参数可校验、失败可自愈的工具。",
+            "steps": [
+              "掌握 JSON Schema 工具定义与并行工具调用（parallel tool calls）的参数约束写法",
+              "实现一个工具网关：统一鉴权、参数校验、超时重试、幂等键与结果裁剪",
+              "针对 3 个真实接口做「工具描述 A/B」实验，观察模型选错工具率的下降幅度"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "OpenAI Function Calling 官方指南（含 parallel tool calls 与 strict schema）",
+                "url": "https://platform.openai.com/docs"
+              },
+              {
+                "type": "文档",
+                "name": "Anthropic Tool Use 文档（tool_result 组织方式与最佳实践）",
+                "url": "https://www.anthropic.com/docs"
+              },
+              {
+                "type": "实践",
+                "name": "把 3 个真实 REST API 封装为工具并压测参数错误率"
+              }
+            ],
+            "duration": "2 周",
+            "verification": "提交一份工具设计规范 + 网关代码：工具误调用率、参数校验失败率有前后对比数据。"
+          }
+        },
+        {
+          "name": "MCP 协议与工具生态",
+          "aliases": [
+            "MCP",
+            "Model Context Protocol",
+            "模型上下文协议",
+            "MCP Server",
+            "MCP服务",
+            "MCP 服务",
+            "MCP协议"
+          ],
+          "importance": 5,
+          "learn": {
+            "why": "MCP 已成为工具接入的事实标准，JD 中「标准化 MCP 服务」「统一封装多源异构数据」是明确加分与加分项。",
+            "focus": "会写 MCP Server 并理解 stdio / Streamable HTTP 两种传输与会话生命周期。",
+            "steps": [
+              "读 MCP 官方规范：初始化握手、capabilities 协商、tools/resources/prompts 三类原语",
+              "用 Python 或 TypeScript SDK 写一个 MCP Server，暴露至少 3 个工具与 1 个 resource，并在 Claude Desktop 或任意客户端接入",
+              "把 Server 打包成 Docker 镜像，补上错误码、超时与权限边界，写清 schema 版本演进策略"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "Model Context Protocol 官方规范与 SDK（modelcontextprotocol.io）",
+                "url": "https://modelcontextprotocol.io/"
+              },
+              {
+                "type": "开源项目",
+                "name": "官方 servers 仓库（filesystem / fetch / git 参考实现）"
+              },
+              {
+                "type": "实践",
+                "name": "自建一个业务 MCP Server 并接入任一 MCP 客户端完成端到端调用"
+              }
+            ],
+            "duration": "2 周",
+            "verification": "开源 MCP Server 仓库，附接入录屏或调用日志与工具 schema 说明。"
+          }
+        },
+        {
+          "name": "上下文工程",
+          "aliases": [
+            "上下文工程",
+            "Context Engineering",
+            "上下文管理",
+            "Context管理",
+            "上下文隔离",
+            "长上下文",
+            "context window",
+            "上下文窗口"
+          ],
+          "importance": 5,
+          "learn": {
+            "why": "JD 原话是「决定模型在每一次调用中究竟看到什么」，这是 Agent 效果与成本的第一杠杆。",
+            "focus": "掌握上下文的选取、压缩、分层与预算分配策略。",
+            "steps": [
+              "为一次多步任务列出上下文清单（系统提示、任务态、检索片段、工具历史、记忆），标注每部分的 token 占比",
+              "实现三种压缩策略（滑动窗口摘要、关键信息抽取、结构化状态外置）并对比同一任务的成功率",
+              "建立上下文预算表：总窗口、系统提示上限、检索片段上限、历史上限，并让超限时按优先级裁剪"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "Anthropic《Effective context engineering for AI agents》工程博客",
+                "url": "https://www.anthropic.com/docs"
+              },
+              {
+                "type": "论文",
+                "name": "Lost in the Middle: How Language Models Use Long Contexts（Liu et al., 2023）"
+              },
+              {
+                "type": "实践",
+                "name": "在同一任务上做上下文消融实验并记录 token-成功率曲线"
+              }
+            ],
+            "duration": "2-3 周",
+            "verification": "产出上下文消融实验报告：每种压缩/裁剪策略下的成功率与 token 成本对比。"
+          }
+        },
+        {
+          "name": "记忆与状态管理",
+          "aliases": [
+            "记忆管理",
+            "记忆机制",
+            "Memory",
+            "长期记忆",
+            "短期记忆",
+            "状态管理",
+            "memory system",
+            "对话记忆",
+            "记忆库"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "长链路任务与跨会话体验依赖记忆，「做过记忆系统」在 JDA 中反复被列为加分项。",
+            "focus": "区分工作记忆、情节记忆与语义记忆，并设计写入、检索、遗忘与冲突处理。",
+            "steps": [
+              "把状态拆成三层：会话内工作记忆（上下文）、任务情节记忆（事件流）、长期语义记忆（向量+结构化画像）",
+              "实现记忆写入打分（是否值得记）、去重合并、时间衰减与冲突覆盖规则",
+              "接入检索式回忆，在长任务上验证「有记忆 / 无记忆」的任务完成率与重复提问率"
+            ],
+            "resources": [
+              {
+                "type": "论文",
+                "name": "MemGPT: Towards LLMs as Operating Systems（Packer et al., 2023）"
+              },
+              {
+                "type": "开源项目",
+                "name": "Letta（原 MemGPT）仓库与架构文档"
+              },
+              {
+                "type": "文档",
+                "name": "LangGraph Persistence / Checkpointer 与 Store 文档",
+                "url": "https://langchain-ai.github.io/langgraph/"
+              }
+            ],
+            "duration": "3 周",
+            "verification": "给出记忆系统设计文档 + 可复现实验：跨会话重复提问率下降、长任务完成率提升数据。"
+          }
+        },
+        {
+          "name": "任务规划与分解",
+          "aliases": [
+            "任务规划",
+            "Plan-and-Execute",
+            "Planning",
+            "任务分解",
+            "Task Decomposition",
+            "规划器",
+            "planner",
+            "计划生成",
+            "子任务拆分"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "「多步任务的编排与稳定性」是 JD 明写职责，规划能力决定长链路任务的完成率。",
+            "focus": "学会在 ReAct 与显式规划之间取舍，并做计划的动态修订。",
+            "steps": [
+              "分别实现 ReAct 式边想边做与 Plan-and-Execute 式先规划后执行，用同一任务对比步数与成功率",
+              "为计划引入结构化中间表示（任务 DAG）与依赖校验，支持并行子任务",
+              "加入重规划触发条件（工具失败、目标偏移、步数超限）并测试对失败任务的恢复能力"
+            ],
+            "resources": [
+              {
+                "type": "论文",
+                "name": "Plan-and-Solve Prompting（Wang et al., 2023）"
+              },
+              {
+                "type": "论文",
+                "name": "ReAct: Synergizing Reasoning and Acting in Language Models（Yao et al., 2022）",
+                "url": "https://arxiv.org/abs/2210.03629"
+              },
+              {
+                "type": "开源项目",
+                "name": "LangGraph Plan-and-Execute 官方示例",
+                "url": "https://langchain-ai.github.io/langgraph/"
+              }
+            ],
+            "duration": "2 周",
+            "verification": "提交规划模块代码与对比实验表：任务 DAG 可视化 + 重规划触发日志。"
+          }
+        },
+        {
+          "name": "推理范式与自省",
+          "aliases": [
+            "推理范式",
+            "Chain of Thought",
+            "CoT",
+            "思维链",
+            "Reflection",
+            "反思",
+            "自省",
+            "Self-Refine",
+            "推理链"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "前沿 Agent 岗位考察对 model/harness/agent 范式演进的判断力，反思与自省是质量闭环的关键环节。",
+            "focus": "掌握 CoT、ReAct、Reflection、Self-Consistency 的适用边界与成本。",
+            "steps": [
+              "在同一个需多步推理的任务上分别用 CoT、ReAct、Reflection 三种范式跑通并记录准确率与 token 消耗",
+              "实现一个反思循环：执行→自评→修订，并设置最大反思轮数防止无效震荡",
+              "分析失败样本，给出「何时该反思、何时该直接重试」的判定规则"
+            ],
+            "resources": [
+              {
+                "type": "论文",
+                "name": "Reflexion: Language Agents with Verbal Reinforcement Learning（Shinn et al., 2023）"
+              },
+              {
+                "type": "论文",
+                "name": "Self-Refine: Iterative Refinement with Self-Feedback（Madaan et al., 2023）"
+              },
+              {
+                "type": "实践",
+                "name": "整理三种范式的选型对照表并写入团队技术文档"
+              }
+            ],
+            "duration": "2 周",
+            "verification": "一份范式选型指南 + 反思循环的消融实验数据（准确率 / token / 延迟）。"
+          }
+        },
+        {
+          "name": "Agent 工作流编排平台",
+          "aliases": [
+            "工作流编排",
+            "Agent工作流",
+            "Workflow",
+            "Dify",
+            "Coze",
+            "n8n",
+            "流程编排",
+            "编排引擎",
+            "低代码编排",
+            "工作流引擎"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "大量岗位要求能快速把业务流程编排成可视化可交付的 Agent 工作流，而非每次从零写代码。",
+            "focus": "能用主流编排平台搭出可交付流程，并看懂其底层节点模型以便二次开发。",
+            "steps": [
+              "用 Dify 或 Coze 搭一条含条件分支、循环、知识库检索、人工审批的完整流程并交付给非技术同事试用",
+              "阅读平台源码中的节点调度与变量传递实现，理解 DSL/Schema 定义",
+              "把一条重复性高的流程从平台导出为代码（或调用其 API），对比两种形态的维护成本"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "Dify 官方文档（Workflow / Chatflow 节点说明）"
+              },
+              {
+                "type": "开源项目",
+                "name": "n8n 仓库（节点与工作流执行模型）"
+              },
+              {
+                "type": "实践",
+                "name": "交付一条真实业务工作流并记录非技术同学的使用反馈"
+              }
+            ],
+            "duration": "2 周",
+            "verification": "一个已上线或被业务实际使用的编排流程导出文件 + 使用说明文档。"
+          }
+        },
+        {
+          "name": "长链路稳定性与容错",
+          "aliases": [
+            "长链路稳定性与容错",
+            "链路稳定性",
+            "长链路",
+            "多步链路",
+            "断点续跑",
+            "编排链路",
+            "链路追踪"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "JD 要求「处理失败、重试与降级」「让 agent 在长链路上稳定完成任务」，这是 demo 与生产的最大分水岭。",
+            "focus": "为每一步设计幂等、可重入、可降级的执行语义。",
+            "steps": [
+              "梳理长链路任务的失败模式清单（工具超时、模型超长、参数错误、外部限流、状态丢失）并逐条给出策略",
+              "实现带幂等键的步骤执行器与断点续跑（持久化 step 状态，重启后从最近成功步继续）",
+              "加入降级路径（换模型、换工具、转人工、返回部分结果）并做故障注入测试"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "LangGraph 官方文档（durable execution / retry policy / interrupt）",
+                "url": "https://langchain-ai.github.io/langgraph/"
+              },
+              {
+                "type": "文档",
+                "name": "Temporal 工作流文档（幂等、重试、补偿的通用模式）",
+                "url": "https://docs.temporal.io/"
+              },
+              {
+                "type": "实践",
+                "name": "写一份故障注入测试用例集，覆盖至少 8 种失败场景"
+              }
+            ],
+            "duration": "3 周",
+            "verification": "故障注入测试报告：各失败场景下的恢复成功率与人工介入率。"
+          }
+        },
+        {
+          "name": "结构化输出与约束生成",
+          "aliases": [
+            "结构化输出",
+            "structured output",
+            "JSON Schema",
+            "输出约束",
+            "约束解码",
+            "格式化输出",
+            "结构化生成",
+            "JSON模式"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "Agent 之间靠结构化契约协作，输出不稳定就无法自动化，「Contract 校验」是工程质量的基础设施。",
+            "focus": "让模型输出稳定符合 schema，并在违约时自动修复。",
+            "steps": [
+              "对比三种方案：提示词约束、provider 原生 structured output、约束解码（如 Outlines / XGrammar）",
+              "实现 schema 校验 + 自动修复重试（把校验错误回灌给模型）并统计修复成功率",
+              "为跨 Agent 传递的契约设计版本兼容策略（字段可选化、默认值、向后兼容）"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "OpenAI Structured Outputs 官方文档（strict schema 约束）"
+              },
+              {
+                "type": "开源项目",
+                "name": "Outlines / XGrammar 仓库（约束解码实现）"
+              },
+              {
+                "type": "实践",
+                "name": "为自有项目定义 10 个契约 schema 并做违约率统计"
+              }
+            ],
+            "duration": "2 周",
+            "verification": "一份 schema 契约清单 + 结构违约率统计（修复前后对比）。"
+          }
+        },
+        {
+          "name": "人机协同与审批流",
+          "aliases": [
+            "Human-in-the-loop",
+            "HITL",
+            "人工审批",
+            "人机协同",
+            "人在回路",
+            "审批流",
+            "人工介入",
+            "确认机制"
+          ],
+          "importance": 3,
+          "learn": {
+            "why": "高危操作必须人工确认，「高危操作强制人工审批」是治理与安全 JD 的常见硬要求。",
+            "focus": "设计可中断、可恢复、带上下文的审批交互。",
+            "steps": [
+              "实现 interrupt/resume：Agent 在关键步骤挂起，把待审批内容与理由推给人工，恢复后继续执行",
+              "定义审批分级策略（自动通过 / 单人确认 / 双人复核）与超时默认行为（默认拒绝）",
+              "补全审批审计记录：谁、何时、依据什么信息、批了什么"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "LangGraph Human-in-the-loop 官方文档（interrupt / approve / edit）",
+                "url": "https://langchain-ai.github.io/langgraph/"
+              },
+              {
+                "type": "实践",
+                "name": "为写操作类工具接入审批流并统计误批率"
+              },
+              {
+                "type": "文档",
+                "name": "OWASP Top 10 for LLM Applications（关于高风险动作的人工确认建议）"
+              }
+            ],
+            "duration": "1-2 周",
+            "verification": "审批流演示：一条挂起-审批-恢复的完整轨迹日志 + 审计字段清单。"
+          }
+        },
+        {
+          "name": "Computer Use 与浏览器自动化",
+          "aliases": [
+            "Computer Use",
+            "浏览器自动化",
+            "Browser Use",
+            "Playwright",
+            "GUI Agent",
+            "RPA",
+            "网页操作",
+            "自动化操作"
+          ],
+          "importance": 3,
+          "learn": {
+            "why": "越来越多 Agent 岗位要求让模型直接操作浏览器与桌面完成端到端任务，是工具调用能力的延伸。",
+            "focus": "掌握可观测、可回放的 GUI 操作循环与稳定性加固。",
+            "steps": [
+              "用 Playwright + 视觉模型实现「截图→定位→点击/输入→校验」最小循环，跑通一个真实网站的登录与表单提交",
+              "为定位失败加入重试与多策略兜底（DOM 选择器优先、视觉兜底），并处理弹窗与等待",
+              "在容器中运行（headless + 固定分辨率），记录操作轨迹以便回放调试"
+            ],
+            "resources": [
+              {
+                "type": "开源项目",
+                "name": "Playwright 官方文档与 Trace Viewer"
+              },
+              {
+                "type": "开源项目",
+                "name": "browser-use 仓库（LLM 驱动浏览器的实现）"
+              },
+              {
+                "type": "文档",
+                "name": "Anthropic Computer Use 参考实现说明",
+                "url": "https://www.anthropic.com/docs"
+              }
+            ],
+            "duration": "2-3 周",
+            "verification": "一个可复现的浏览器自动化 Agent demo，附 Trace 文件与成功率统计。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "大模型与算法",
+      "skills": [
+        {
+          "name": "RAG 全流程",
+          "aliases": [
+            "RAG",
+            "检索增强",
+            "检索增强生成",
+            "Retrieval Augmented",
+            "知识库问答",
+            "知识库检索",
+            "检索问答"
+          ],
+          "importance": 5,
+          "learn": {
+            "why": "RAG 是企业知识落地的第一选择，岗位池中 RAG 与知识库是出现频率最高的技术关键词之一。",
+            "focus": "端到端掌握「解析→切分→索引→召回→重排→生成→引用」并可定位效果瓶颈所在环节。",
+            "steps": [
+              "搭一条最小 RAG：文档解析、切分、embedding 入库、top-k 召回、拼上下文生成并带引用",
+              "建立分环节评测集（召回率、答案正确率、引用准确率），能判断问题出在切分、召回还是生成",
+              "按评测结论做两轮优化（如改切分策略、加 rerank、查询改写），记录每轮指标变化"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "LlamaIndex 官方文档（RAG 各环节与评测模块）",
+                "url": "https://docs.llamaindex.ai/"
+              },
+              {
+                "type": "论文",
+                "name": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks（Lewis et al., 2020）"
+              },
+              {
+                "type": "开源项目",
+                "name": "RAGAS 评测框架仓库",
+                "url": "https://docs.ragas.io/"
+              },
+              {
+                "type": "实践",
+                "name": "用自有文档集搭一个可对比实验的 RAG 基线"
+              }
+            ],
+            "duration": "3 周",
+            "verification": "一个可复现的 RAG 项目：含评测集、基线指标与两轮优化前后的指标对比表。"
+          }
+        },
+        {
+          "name": "向量数据库与向量检索",
+          "aliases": [
+            "向量库",
+            "向量数据库",
+            "Vector DB",
+            "Milvus",
+            "FAISS",
+            "Pinecone",
+            "Qdrant",
+            "Chroma",
+            "pgvector",
+            "Weaviate",
+            "向量检索",
+            "Elasticsearch"
+          ],
+          "importance": 5,
+          "learn": {
+            "why": "向量检索是 RAG 与记忆系统的底座，JD 常直接点名 Milvus / FAISS / 向量数据库经验。",
+            "focus": "掌握索引类型、距离度量、过滤检索与规模化的取舍。",
+            "steps": [
+              "用 FAISS 与一个服务化向量库（Milvus 或 Qdrant）各实现一次检索，压测不同索引（HNSW / IVF）下的延迟与召回",
+              "实现带元数据过滤的混合检索（标量过滤 + 向量近邻），处理分页、更新与删除",
+              "做一次容量测算：文档量、维度、索引内存占用与写入吞吐的关系并形成选型结论"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "Milvus 官方文档（索引类型与一致性级别）",
+                "url": "https://milvus.io/docs/"
+              },
+              {
+                "type": "开源项目",
+                "name": "FAISS 仓库 Wiki（Index 选型指南）",
+                "url": "https://github.com/facebookresearch/faiss"
+              },
+              {
+                "type": "文档",
+                "name": "Qdrant 文档（payload 过滤与混合检索）",
+                "url": "https://qdrant.tech/documentation/"
+              }
+            ],
+            "duration": "2 周",
+            "verification": "一份向量库选型报告：含压测数据（QPS/延迟/召回）与最终选型理由。"
+          }
+        },
+        {
+          "name": "文本嵌入与语义检索",
+          "aliases": [
+            "Embedding",
+            "嵌入模型",
+            "文本向量",
+            "语义检索",
+            "bge",
+            "m3e",
+            "text-embedding",
+            "向量化",
+            "语义相似度"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "嵌入质量直接决定召回上限，选型与领域适配是应用工程师必须能拍板的事。",
+            "focus": "会做嵌入模型评测与领域微调，理解对称/非对称检索的差异。",
+            "steps": [
+              "在自有业务语料上评测 3 个嵌入模型（如 bge-m3、text-embedding-3、Qwen-Embedding），用 recall@k 与 MRR 对比",
+              "用对比学习在领域数据上微调一个小嵌入模型，验证 recall 提升",
+              "梳理向量维度、归一化、批量推理与缓存对成本的影响并固化到工程规范"
+            ],
+            "resources": [
+              {
+                "type": "开源项目",
+                "name": "BAAI FlagEmbedding / bge 模型仓库与评测榜",
+                "url": "https://huggingface.co/BAAI/bge-m3"
+              },
+              {
+                "type": "文档",
+                "name": "MTEB 榜单（Massive Text Embedding Benchmark）"
+              },
+              {
+                "type": "论文",
+                "name": "Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks（Reimers & Gurevych, 2019）"
+              }
+            ],
+            "duration": "2 周",
+            "verification": "嵌入模型选型报告 + 一次领域微调的 recall@10 提升对比。"
+          }
+        },
+        {
+          "name": "重排序与混合检索",
+          "aliases": [
+            "Rerank",
+            "重排序",
+            "重排",
+            "混合检索",
+            "Hybrid Search",
+            "BM25",
+            "稀疏检索",
+            "召回排序",
+            "关键词检索"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "纯向量召回在专有名词与数字上易失效，混合检索 + 重排是生产 RAG 的标配优化手段。",
+            "focus": "会组合稀疏/稠密召回与 cross-encoder 重排，并量化收益。",
+            "steps": [
+              "实现 BM25 + 向量双路召回与加权融合（RRF 或加权分数），对比单路召回效果",
+              "接入 cross-encoder 重排模型（如 bge-reranker），测量 top-k 缩小后的准确率与延迟变化",
+              "做延迟预算权衡：召回条数、重排条数与端到端 P95 延迟的关系"
+            ],
+            "resources": [
+              {
+                "type": "开源项目",
+                "name": "BAAI bge-reranker 模型卡与使用示例",
+                "url": "https://huggingface.co/BAAI/bge-m3"
+              },
+              {
+                "type": "文档",
+                "name": "Elasticsearch 官方文档（kNN 检索与 RRF 融合）"
+              },
+              {
+                "type": "论文",
+                "name": "Reciprocal Rank Fusion outperforms Condorcet（Cormack et al., 2009）"
+              }
+            ],
+            "duration": "1-2 周",
+            "verification": "混合检索 + 重排的消融实验表：各组合的 recall@k、nDCG 与 P95 延迟。"
+          }
+        },
+        {
+          "name": "文档解析与切分",
+          "aliases": [
+            "文档解析",
+            "Chunking",
+            "切分",
+            "分块",
+            "OCR",
+            "PDF解析",
+            "非结构化数据",
+            "文本抽取",
+            "版面分析"
+          ],
+          "importance": 3,
+          "learn": {
+            "why": "企业数据多为 PDF/PPT/扫描件，解析与切分质量是 RAG 效果的第一道漏斗。",
+            "focus": "能处理表格、多栏、扫描件，并选择语义化切分策略。",
+            "steps": [
+              "用解析工具（PyMuPDF / MinerU / Unstructured）处理含表格与多栏的 PDF，评估结构还原质量",
+              "对比固定长度、按标题层级、语义切分三种策略对召回的影响，选定默认策略与重叠参数",
+              "为超长表格与图像型页面补 OCR 与摘要化入库流程"
+            ],
+            "resources": [
+              {
+                "type": "开源项目",
+                "name": "MinerU / PDF-Extract-Kit 仓库（高质量 PDF 解析）"
+              },
+              {
+                "type": "文档",
+                "name": "Unstructured 官方文档（partition 与 chunking 策略）"
+              },
+              {
+                "type": "实践",
+                "name": "在 20 份真实业务文档上做解析质量抽样评估表"
+              }
+            ],
+            "duration": "2 周",
+            "verification": "解析质量评估表（结构还原/表格完整率）+ 切分策略对比结论。"
+          }
+        },
+        {
+          "name": "大模型微调（SFT）",
+          "aliases": [
+            "SFT",
+            "微调",
+            "fine-tune",
+            "Fine-tuning",
+            "指令微调",
+            "监督微调",
+            "全参微调",
+            "领域微调"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "垂直场景需要靠微调稳定输出风格与格式，JD 中 SFT 与后训练是算法类岗位的硬技能。",
+            "focus": "会构建高质量指令数据集并跑通完整 SFT 流程与效果评估。",
+            "steps": [
+              "构造 1k-5k 条领域指令数据（含正负样本与格式标准化），写清数据规范与清洗脚本",
+              "用 LLaMA-Factory 或 TRL 跑一次全流程 SFT，记录超参、loss 曲线与显存占用",
+              "用独立测试集对比微调前后的指令遵循率、格式合格率与通用能力回退情况"
+            ],
+            "resources": [
+              {
+                "type": "开源项目",
+                "name": "LLaMA-Factory 仓库（SFT 全流程与配置化训练）"
+              },
+              {
+                "type": "文档",
+                "name": "HuggingFace TRL SFTTrainer 文档",
+                "url": "https://huggingface.co/docs"
+              },
+              {
+                "type": "论文",
+                "name": "Self-Instruct: Aligning Language Models with Self-Generated Instructions（Wang et al., 2022）"
+              }
+            ],
+            "duration": "3 周",
+            "verification": "一次完整 SFT 实验记录：数据规范、训练配置、测试集前后指标对比。"
+          }
+        },
+        {
+          "name": "参数高效微调（LoRA/QLoRA）",
+          "aliases": [
+            "LoRA",
+            "QLoRA",
+            "PEFT",
+            "Adapter",
+            "低秩微调",
+            "参数高效微调",
+            "lora微调"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "单卡即可完成领域适配，是应用工程师在有限算力下最常用的落地手段。",
+            "focus": "理解秩、alpha、目标模块与量化对效果与显存的影响并能自行调参。",
+            "steps": [
+              "在一张消费级显卡上用 QLoRA 完成 7B 模型微调，记录显存峰值与训练时长",
+              "做 rank / target_modules / learning rate 的小规模网格实验，观察效果与过拟合边界",
+              "把 LoRA 权重合并导出并与基础模型做推理对比（质量、速度、体积）"
+            ],
+            "resources": [
+              {
+                "type": "论文",
+                "name": "LoRA: Low-Rank Adaptation of Large Language Models（Hu et al., 2021）"
+              },
+              {
+                "type": "论文",
+                "name": "QLoRA: Efficient Finetuning of Quantized LLMs（Dettmers et al., 2023）"
+              },
+              {
+                "type": "开源项目",
+                "name": "HuggingFace PEFT 仓库与示例",
+                "url": "https://huggingface.co/docs"
+              }
+            ],
+            "duration": "2 周",
+            "verification": "LoRA 调参实验记录表 + 可直接复用的训练配置与合并导出脚本。"
+          }
+        },
+        {
+          "name": "对齐与偏好优化（RLHF/DPO/GRPO）",
+          "aliases": [
+            "RLHF",
+            "DPO",
+            "GRPO",
+            "PPO",
+            "偏好优化",
+            "后训练",
+            "Post-training",
+            "奖励模型",
+            "强化学习",
+            "对齐训练"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "后训练算法岗位密集出现，应用岗也需要理解对齐手段以判断何时该微调、何时该改提示。",
+            "focus": "理解偏好数据、奖励信号与各算法的代价差异。",
+            "steps": [
+              "构造偏好对数据集（chosen/rejected）并跑通一次 DPO 训练",
+              "对比 SFT / DPO / GRPO 在同一任务上的效果与训练成本，形成选型判断",
+              "实现一个 LLM-as-Judge 的胜率评估脚本量化对齐效果"
+            ],
+            "resources": [
+              {
+                "type": "论文",
+                "name": "Direct Preference Optimization: Your Language Model is Secretly a Reward Model（Rafailov et al., 2023）"
+              },
+              {
+                "type": "论文",
+                "name": "DeepSeekMath（GRPO 方法出处，2024）"
+              },
+              {
+                "type": "文档",
+                "name": "HuggingFace TRL 官方文档（DPO / GRPO Trainer）",
+                "url": "https://huggingface.co/docs"
+              }
+            ],
+            "duration": "3 周",
+            "verification": "对齐实验报告：偏好数据构造方式、训练曲线与 Judge 胜率对比。"
+          }
+        },
+        {
+          "name": "预训练与继续预训练",
+          "aliases": [
+            "预训练",
+            "Pretrain",
+            "Pre-training",
+            "继续预训练",
+            "CPT",
+            "语料构建",
+            "数据配比",
+            "Tokenizer"
+          ],
+          "importance": 3,
+          "learn": {
+            "why": "大厂基础模型与 AI Infra 岗位要求理解预训练数据与训练流程，应用岗需能读懂并与之协作。",
+            "focus": "掌握语料清洗、去重、配比与继续预训练的工程要点。",
+            "steps": [
+              "对 10GB 级领域语料跑一遍清洗-去重-质量过滤流水线并输出统计报告",
+              "用小模型（<1B）做一次继续预训练，观察领域困惑度变化与通用能力回退",
+              "梳理 tokenizer 词表扩展对领域术语的效果影响并做一次实验"
+            ],
+            "resources": [
+              {
+                "type": "论文",
+                "name": "The Pile / Dolma 数据集论文（语料构建与去重方法）"
+              },
+              {
+                "type": "开源项目",
+                "name": "Megatron-LM 仓库（并行训练与数据管线）"
+              },
+              {
+                "type": "文档",
+                "name": "HuggingFace Datasets 数据清洗与去重指南",
+                "url": "https://huggingface.co/docs"
+              }
+            ],
+            "duration": "3-4 周",
+            "verification": "语料处理流水线脚本 + 继续预训练的困惑度与能力回退对比。"
+          }
+        },
+        {
+          "name": "推理部署与加速（vLLM/TGI/Ollama）",
+          "aliases": [
+            "vLLM",
+            "TGI",
+            "Ollama",
+            "推理部署",
+            "模型部署",
+            "推理优化",
+            "TensorRT-LLM",
+            "SGLang",
+            "模型加速",
+            "推理框架",
+            "推理服务",
+            "模型服务"
+          ],
+          "importance": 5,
+          "learn": {
+            "why": "自建推理服务是成本与可控性的分水岭，岗位池里「大模型推理服务」「推理优化」出现频繁。",
+            "focus": "掌握 KV Cache、连续批处理、并行策略与吞吐/延迟调优。",
+            "steps": [
+              "用 vLLM 部署一个开源模型，压测不同并发下的 TTFT、TPOT 与吞吐，画出性能曲线",
+              "开连续批处理与前缀缓存，做参数调优（max_num_seqs、gpu_memory_utilization）并记录收益",
+              "对比 Ollama（本地/低并发）与 vLLM（服务化）的适用场景，写出选型与容量规划说明"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "vLLM 官方文档（PagedAttention、continuous batching、prefix caching）"
+              },
+              {
+                "type": "论文",
+                "name": "Efficient Memory Management for Large Language Model Serving with PagedAttention（Kwon et al., 2023）"
+              },
+              {
+                "type": "开源项目",
+                "name": "SGLang / TensorRT-LLM 仓库"
+              },
+              {
+                "type": "文档",
+                "name": "HuggingFace TGI 文档",
+                "url": "https://huggingface.co/docs"
+              }
+            ],
+            "duration": "3 周",
+            "verification": "推理服务压测报告：并发-吞吐-延迟曲线 + 部署脚本与容量测算。"
+          }
+        },
+        {
+          "name": "模型量化与蒸馏",
+          "aliases": [
+            "量化",
+            "Quantization",
+            "INT8",
+            "AWQ",
+            "GPTQ",
+            "蒸馏",
+            "Distillation",
+            "模型压缩",
+            "FlashAttention"
+          ],
+          "importance": 3,
+          "learn": {
+            "why": "降本增效的实际手段，JD 中「模型压缩/加速」是推理与工程岗的常见要求。",
+            "focus": "理解量化精度损失与显存/吞吐收益的权衡。",
+            "steps": [
+              "对同一模型分别做 AWQ/GPTQ 量化并与 FP16 对比显存、吞吐与任务准确率",
+              "跑一次小模型蒸馏（大模型生成数据 → 小模型训练），评估效果与成本",
+              "整理量化选型清单：什么场景值得量化、精度损失如何监控"
+            ],
+            "resources": [
+              {
+                "type": "论文",
+                "name": "AWQ: Activation-aware Weight Quantization（Lin et al., 2023）"
+              },
+              {
+                "type": "开源项目",
+                "name": "AutoGPTQ / llm-compressor 仓库"
+              },
+              {
+                "type": "实践",
+                "name": "整理量化前后端到端业务指标对比表"
+              }
+            ],
+            "duration": "2 周",
+            "verification": "量化对比报告：显存、吞吐、任务准确率三方数据与选型结论。"
+          }
+        },
+        {
+          "name": "多模态大模型应用",
+          "aliases": [
+            "多模态",
+            "Multimodal",
+            "VLM",
+            "图文理解",
+            "视觉语言模型",
+            "多模态算法",
+            "图像算法",
+            "语音",
+            "视觉"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "岗位池里多模态是与 Agent 并列的高频标签，内容理解与生成类业务几乎都要用到。",
+            "focus": "掌握图文/音视频输入的工程处理链路与多模态能力边界。",
+            "steps": [
+              "用 VLM 完成一个真实任务（票据/截图/商品图理解），构建带标注的评测集统计准确率",
+              "处理超长图像与多图输入的成本优化（缩放、切片、缓存、结构化预抽取）",
+              "对比「VLM 直接输出」与「OCR/VLM 抽取 + 文本模型推理」两条链路的准确率与成本"
+            ],
+            "resources": [
+              {
+                "type": "论文",
+                "name": "Visual Instruction Tuning（LLaVA, Liu et al., 2023）"
+              },
+              {
+                "type": "开源项目",
+                "name": "Qwen-VL / InternVL 模型卡与推理示例"
+              },
+              {
+                "type": "实践",
+                "name": "构建不少于 200 条的多模态业务评测集"
+              }
+            ],
+            "duration": "3 周",
+            "verification": "多模态任务评测报告 + 两条链路的成本与准确率对照。"
+          }
+        },
+        {
+          "name": "Transformer 与大模型原理",
+          "aliases": [
+            "Transformer",
+            "Attention",
+            "注意力机制",
+            "大模型原理",
+            "LLM原理",
+            "深度学习",
+            "自然语言处理",
+            "NLP",
+            "大语言模型",
+            "机器学习"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "前沿岗位要求能判断「问题出在上下文、工具、编排还是模型本身」，前提是理解模型内部机制。",
+            "focus": "搞清 attention、位置编码、KV Cache、上下文长度与采样参数的实际影响。",
+            "steps": [
+              "手写一个最小 Transformer（含多头注意力与位置编码）并训练一个玩具任务",
+              "分析采样参数（temperature/top-p/重复惩罚）对 Agent 任务稳定性与工具调用正确率的影响",
+              "读一篇 SOTA 模型技术报告，整理其架构、训练阶段与评测口径"
+            ],
+            "resources": [
+              {
+                "type": "论文",
+                "name": "Attention Is All You Need（Vaswani et al., 2017）",
+                "url": "https://arxiv.org/abs/1706.03762"
+              },
+              {
+                "type": "课程",
+                "name": "Karpathy《Let's build GPT: from scratch》与 nanoGPT 仓库"
+              },
+              {
+                "type": "文档",
+                "name": "HuggingFace LLM Course 第一章（Transformer 架构）",
+                "url": "https://huggingface.co/docs"
+              }
+            ],
+            "duration": "3 周",
+            "verification": "nanoGPT 复现笔记 + 采样参数对 Agent 稳定性的实验结论。"
+          }
+        },
+        {
+          "name": "提示工程",
+          "aliases": [
+            "Prompt",
+            "Prompt Engineering",
+            "提示词",
+            "提示工程",
+            "Prompt优化",
+            "few-shot",
+            "系统提示",
+            "提示词工程"
+          ],
+          "importance": 5,
+          "learn": {
+            "why": "最低成本的效果杠杆，几乎所有 Agent 岗位都会直接或间接考察提示设计与迭代方法。",
+            "focus": "把提示当作可版本化、可评测的工程资产而不是玄学调参。",
+            "steps": [
+              "建立提示模板库与版本管理（含 system / few-shot / 输出约束三段结构），每次变更走评测",
+              "用固定评测集做提示 A/B，量化指令遵循率、格式合格率与 token 成本变化",
+              "针对失败样本做归因（指令歧义、缺少示例、上下文噪声）并沉淀改写规则"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "OpenAI Prompt Engineering Guide 官方指南",
+                "url": "https://platform.openai.com/docs/guides/prompt-engineering"
+              },
+              {
+                "type": "文档",
+                "name": "Anthropic Prompt Engineering 文档（XML 标签组织与示例驱动）",
+                "url": "https://platform.openai.com/docs/guides/prompt-engineering"
+              },
+              {
+                "type": "论文",
+                "name": "Chain-of-Thought Prompting Elicits Reasoning in LLMs（Wei et al., 2022）"
+              }
+            ],
+            "duration": "1-2 周",
+            "verification": "提示模板库 + 至少一次可复现的提示 A/B 评测报告。"
+          }
+        },
+        {
+          "name": "幻觉抑制与事实性",
+          "aliases": [
+            "幻觉",
+            "Hallucination",
+            "事实性",
+            "可信生成",
+            "citation",
+            "引用溯源",
+            "幻觉抑制",
+            "内容准确性"
+          ],
+          "importance": 3,
+          "learn": {
+            "why": "生产环境容不下编造，「降低幻觉、可溯源」是 JD 里的高频质量诉求。",
+            "focus": "掌握引用约束、事实校验与自一致性检测等可落地手段。",
+            "steps": [
+              "实现强制引用生成（每个结论必须带来源片段 id）并在后置校验中剔除无来源断言",
+              "做自一致性检测（多次采样比对结论）与外部知识校验（检索/规则）",
+              "构建幻觉样本集，量化每种手段对幻觉率的下降与对延迟的影响"
+            ],
+            "resources": [
+              {
+                "type": "论文",
+                "name": "Survey on Hallucination in Natural Language Generation（Ji et al., 2023）"
+              },
+              {
+                "type": "论文",
+                "name": "SelfCheckGPT: Zero-Resource Black-Box Hallucination Detection（Manakul et al., 2023）"
+              },
+              {
+                "type": "实践",
+                "name": "建立 100 条幻觉样本集并做回归监控"
+              }
+            ],
+            "duration": "2 周",
+            "verification": "幻觉回归测试集与检测脚本：幻觉率前后对比数据。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "后端与分布式",
+      "skills": [
+        {
+          "name": "高并发与性能优化",
+          "aliases": [
+            "高并发",
+            "性能优化",
+            "性能调优",
+            "QPS",
+            "低延迟",
+            "压测",
+            "性能瓶颈",
+            "吞吐"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "Agent 服务的成本与体验都是延迟/吞吐问题，后端功底决定能否把 demo 变成可承载流量的系统。",
+            "focus": "建立「测量→定位→优化→回归」的闭环，而不是凭感觉调参。",
+            "steps": [
+              "为一个在线服务建立压测基线：QPS、P50/P95/P99 延迟、错误率与资源占用",
+              "用 profiling 定位瓶颈（CPU/锁/GC/IO/序列化），做一次优化并量化收益",
+              "把优化沉淀成容量模型：单实例承载量与水平扩容系数"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "Google SRE Book 第 21 章《Handling Overload》",
+                "url": "https://sre.google/sre-book/"
+              },
+              {
+                "type": "开源项目",
+                "name": "wrk / k6 压测工具文档"
+              },
+              {
+                "type": "实践",
+                "name": "对自有服务做一次完整压测并输出优化前后对比"
+              }
+            ],
+            "duration": "3 周",
+            "verification": "压测与调优报告：瓶颈定位过程、优化手段、P95 延迟与吞吐的前后对比。"
+          }
+        },
+        {
+          "name": "分布式系统设计",
+          "aliases": [
+            "分布式系统",
+            "分布式",
+            "分布式经验",
+            "一致性",
+            "共识",
+            "CAP",
+            "分布式事务",
+            "分片"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "Agent 平台的会话状态、任务队列、向量索引都需要分布式设计，岗位常写「分布式经验」。",
+            "focus": "掌握一致性、分区、副本与幂等这些基本约束在真实系统中的落地。",
+            "steps": [
+              "实现一次有状态服务的分片方案（路由表、扩缩容、数据迁移），写清一致性取舍",
+              "用 Raft 类组件（etcd）做一次选主与故障切换实验，观察恢复时间与数据丢失边界",
+              "整理常见分布式问题清单（脑裂、重复投递、时钟漂移）在 Agent 场景的具体表现"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "Designing Data-Intensive Applications（DDIA，第 5-9 章）",
+                "url": "https://dataintensive.net/"
+              },
+              {
+                "type": "开源项目",
+                "name": "etcd / Raft 论文《In Search of an Understandable Consensus Algorithm》",
+                "url": "https://etcd.io/docs/"
+              },
+              {
+                "type": "课程",
+                "name": "MIT 6.824 Distributed Systems 公开课"
+              }
+            ],
+            "duration": "4 周",
+            "verification": "一份分布式设计方案文档（含失败场景与取舍）+ 一次故障切换实验记录。"
+          }
+        },
+        {
+          "name": "微服务架构",
+          "aliases": [
+            "微服务",
+            "Microservice",
+            "微服务经验",
+            "服务拆分",
+            "服务治理",
+            "微服务架构",
+            "RPC",
+            "gRPC"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "企业级 Agent 平台通常以微服务形态交付，岗位要求能把 Agent 能力拆成可独立演进的服务。",
+            "focus": "掌握服务边界划分、接口契约与跨服务链路治理。",
+            "steps": [
+              "把一个单体 Agent 应用按能力边界拆成 3 个服务（推理/工具/编排），定义清晰接口与版本策略",
+              "接入服务注册发现、超时重试与熔断，验证单服务故障时的可用性",
+              "梳理拆分带来的成本（链路变长、调试困难）并写下何时不该拆的判据"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "microservices.io 模式目录（Chris Richardson）",
+                "url": "https://microservices.io/"
+              },
+              {
+                "type": "文档",
+                "name": "gRPC 官方文档（proto 契约与流式接口）",
+                "url": "https://grpc.io/docs/"
+              },
+              {
+                "type": "实践",
+                "name": "完成一次单体到微服务的拆分并记录链路延迟变化"
+              }
+            ],
+            "duration": "3 周",
+            "verification": "拆分后的服务边界图、接口契约文件与故障演练记录。"
+          }
+        },
+        {
+          "name": "消息队列与异步处理",
+          "aliases": [
+            "Kafka",
+            "RocketMQ",
+            "RabbitMQ",
+            "消息队列",
+            "MQ",
+            "异步",
+            "事件驱动",
+            "流处理",
+            "削峰"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "Agent 长任务天然异步，JD 中 Kafka 等中间件常与分布式经验一起出现。",
+            "focus": "掌握投递语义、消费幂等与积压治理。",
+            "steps": [
+              "用 Kafka 或 RocketMQ 实现一次异步任务派发与结果回调，处理重复投递与顺序问题",
+              "做积压演练：模拟消费者变慢，验证限流、扩消费者与死信队列策略",
+              "梳理 exactly-once 语义的真实代价并确定本业务的最终一致性方案"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "Apache Kafka 官方文档（Delivery Semantics 章节）",
+                "url": "https://kafka.apache.org/documentation/"
+              },
+              {
+                "type": "文档",
+                "name": "RocketMQ 官方文档（事务消息与顺序消息）"
+              },
+              {
+                "type": "实践",
+                "name": "异步任务系统的幂等设计与压测记录"
+              }
+            ],
+            "duration": "2 周",
+            "verification": "异步任务链路设计文档 + 重复投递/积压场景的实测结论。"
+          }
+        },
+        {
+          "name": "缓存设计",
+          "aliases": [
+            "Redis",
+            "缓存",
+            "Cache",
+            "分布式缓存",
+            "多级缓存",
+            "缓存穿透",
+            "缓存一致性"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "缓存是延迟与成本的第一道防线（含 Agent 的语义缓存），Redis 在岗位标签中出现频次很高。",
+            "focus": "掌握缓存模式、失效策略与一致性处理。",
+            "steps": [
+              "实现 cache-aside 与写穿两种模式，处理缓存穿透/击穿/雪崩并做实验验证",
+              "为 LLM 调用设计语义缓存（embedding 相似度命中），统计命中率与节省的 token 成本",
+              "定义 key 规范、TTL 梯度与失效广播机制，避免脏数据导致的业务事故"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "Redis 官方文档（Persistence、Eviction、Client-side caching）",
+                "url": "https://redis.io/docs/"
+              },
+              {
+                "type": "文档",
+                "name": "AWS Architecture Blog《Caching challenges and strategies》"
+              },
+              {
+                "type": "实践",
+                "name": "在 Agent 服务上接入语义缓存并统计成本下降幅度"
+              }
+            ],
+            "duration": "2 周",
+            "verification": "缓存设计文档 + 语义缓存命中率与成本节省数据。"
+          }
+        },
+        {
+          "name": "关系型数据库与数据建模",
+          "aliases": [
+            "MySQL",
+            "PostgreSQL",
+            "Postgres",
+            "数据库",
+            "事务",
+            "索引优化",
+            "分库分表",
+            "SQL优化",
+            "OLTP"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "Agent 的会话、任务、审计数据最终都要落库，索引与事务能力是后端基本功。",
+            "focus": "会设计能支撑查询模式的表结构与索引，并处理慢查询。",
+            "steps": [
+              "为 Agent 会话/任务/工具调用三类实体设计表结构与索引，写清查询模式与字段取舍",
+              "用 EXPLAIN 定位并优化至少 3 条慢查询，记录执行计划变化",
+              "设计审计数据的归档与冷热分离策略，验证查询性能不随时间劣化"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "PostgreSQL 官方文档（Indexes、EXPLAIN、MVCC）",
+                "url": "https://www.postgresql.org/docs/"
+              },
+              {
+                "type": "文档",
+                "name": "MySQL 官方文档（InnoDB 索引与锁）"
+              },
+              {
+                "type": "实践",
+                "name": "为自有项目做一次 schema 评审与慢查询优化"
+              }
+            ],
+            "duration": "2 周",
+            "verification": "表结构与索引设计文档 + 慢查询优化前后的执行计划与耗时对比。"
+          }
+        },
+        {
+          "name": "容器化与镜像工程",
+          "aliases": [
+            "Docker",
+            "容器化",
+            "镜像",
+            "Container",
+            "镜像构建",
+            "dockerfile",
+            "Compose"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "交付与部署的基本单位，JD 中 Docker 与 K8s 是工程能力的默认前置。",
+            "focus": "构建小体积、可复现、可安全运行的镜像。",
+            "steps": [
+              "为 Python 与 Node 应用各写一份多阶段构建 Dockerfile，把镜像体积压到合理区间",
+              "处理依赖缓存、非 root 用户、健康检查与信号处理等生产要点",
+              "用 Compose 一键起本地全栈（服务+数据库+向量库）并写成 README"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "Docker 官方文档《Multi-stage builds》与最佳实践",
+                "url": "https://docs.docker.com/"
+              },
+              {
+                "type": "文档",
+                "name": "Docker Compose 官方文档",
+                "url": "https://docs.docker.com/"
+              },
+              {
+                "type": "实践",
+                "name": "把自有项目打包成一键启动的 Compose 环境"
+              }
+            ],
+            "duration": "1-2 周",
+            "verification": "仓库内可复现的 Dockerfile/Compose 与镜像体积、启动时长数据。"
+          }
+        },
+        {
+          "name": "Kubernetes 与云原生",
+          "aliases": [
+            "K8s",
+            "Kubernetes",
+            "云原生",
+            "容器编排",
+            "Helm",
+            "云平台",
+            "弹性扩缩容",
+            "HPA"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "Agent 推理服务与工具服务需要弹性伸缩与滚动发布，云原生是平台岗与后端岗的共同要求。",
+            "focus": "会写 Deployment/Service/HPA 并能排查 Pod 层面的常见故障。",
+            "steps": [
+              "把服务部署到 K8s（Deployment + Service + Ingress），配置探针与资源限额",
+              "基于 GPU/CPU 指标配置 HPA 做一次真实扩缩容演练，记录扩容延迟",
+              "排查并解决至少两类线上问题（OOMKilled、镜像拉取失败、探针抖动）"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "Kubernetes 官方文档（Workloads、Probes、Autoscaling）",
+                "url": "https://kubernetes.io/docs/"
+              },
+              {
+                "type": "实践",
+                "name": "用 kind/minikube 搭一套本地集群并完成一次滚动发布"
+              },
+              {
+                "type": "文档",
+                "name": "Helm 官方文档（Chart 模板化部署）"
+              }
+            ],
+            "duration": "3 周",
+            "verification": "可复现的 K8s 部署清单（YAML/Helm）+ 扩缩容演练记录。"
+          }
+        },
+        {
+          "name": "网关与流量治理",
+          "aliases": [
+            "网关",
+            "API Gateway",
+            "Nginx",
+            "限流",
+            "熔断",
+            "负载均衡",
+            "流量治理",
+            "API设计",
+            "OpenAPI"
+          ],
+          "importance": 3,
+          "learn": {
+            "why": "模型调用需要统一入口做鉴权、配额与灰度，网关能力直接决定平台的可运营性。",
+            "focus": "掌握限流、熔断、灰度与配额在多模型多租户场景的实现。",
+            "steps": [
+              "用网关或 Nginx 实现按租户/模型维度的限流与配额，验证超限行为",
+              "接入灰度路由（按 header 或权重分流到不同模型版本）并做一次灰度发布",
+              "实现多 provider 故障转移（主备模型切换）并测量切换延迟"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "Nginx 官方文档（limit_req / upstream / 健康检查）",
+                "url": "https://nginx.org/en/docs/"
+              },
+              {
+                "type": "开源项目",
+                "name": "APISIX 或 Kong 官方文档（插件式限流与认证）"
+              },
+              {
+                "type": "实践",
+                "name": "为多模型接入层设计配额与灰度方案"
+              }
+            ],
+            "duration": "2 周",
+            "verification": "网关配置与压测记录：限流生效验证、灰度切换日志、故障转移耗时。"
+          }
+        },
+        {
+          "name": "CI/CD 与工程化",
+          "aliases": [
+            "CI/CD",
+            "持续集成",
+            "DevOps",
+            "流水线",
+            "Jenkins",
+            "GitLab CI",
+            "自动化部署",
+            "发布流程",
+            "GitHub Actions"
+          ],
+          "importance": 3,
+          "learn": {
+            "why": "Agent 迭代极快，没有自动化测试与发布就无法持续演进，是团队协作的底线要求。",
+            "focus": "把测试、构建、部署与回滚串成一条可重复的流水线。",
+            "steps": [
+              "为项目配置 CI：lint、单测、构建镜像、推送并部署到测试环境",
+              "加入提示词/评测的回归门禁（效果指标低于阈值则阻断合并）",
+              "实现一键回滚并做一次演练，记录从发现到回滚完成的时间"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "GitHub Actions 官方文档（workflow 语法与缓存）"
+              },
+              {
+                "type": "文档",
+                "name": "The Twelve-Factor App（配置与发布管理）"
+              },
+              {
+                "type": "实践",
+                "name": "给自有仓库补一条含评测门禁的流水线"
+              }
+            ],
+            "duration": "2 周",
+            "verification": "可见的 CI 配置与流水线运行记录 + 回滚演练时间数据。"
+          }
+        },
+        {
+          "name": "可观测性建设",
+          "aliases": [
+            "可观测",
+            "Observability",
+            "监控",
+            "Prometheus",
+            "Grafana",
+            "链路追踪",
+            "Tracing",
+            "日志",
+            "OpenTelemetry",
+            "告警",
+            "指标"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "JD 明写「建设可观测能力：让 agent 的每一次决策可追溯、可回放、可解释」。",
+            "focus": "把 Agent 的每一步变成可查询的 span，并建立可行动的告警。",
+            "steps": [
+              "用 OpenTelemetry 给 Agent 链路埋点（LLM 调用、工具调用、检索、审批）并接入可视化",
+              "定义核心指标（成功率、平均步数、P95 延迟、token 成本、工具错误率）与仪表盘",
+              "配置按业务的告警规则（失败率突增、成本超预算），并写一份排障手册"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "OpenTelemetry 官方文档（Traces/Metrics/Logs 与语义约定）"
+              },
+              {
+                "type": "文档",
+                "name": "Prometheus + Grafana 官方入门文档",
+                "url": "https://grafana.com/docs/"
+              },
+              {
+                "type": "文档",
+                "name": "OpenLLMetry / Langfuse 的 Agent 链路埋点实践"
+              }
+            ],
+            "duration": "3 周",
+            "verification": "线上可访问的监控面板截图 + 一次基于 trace 的真实问题定位复盘。"
+          }
+        },
+        {
+          "name": "系统架构设计",
+          "aliases": [
+            "架构设计",
+            "系统设计",
+            "架构设计经验",
+            "技术选型",
+            "架构评审",
+            "架构师"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "「能判断 AI 给出的技术方案是否可靠、架构设计是否合适」是前沿 Agent 岗位的硬性判断力要求。",
+            "focus": "能在约束下做取舍，并写出别人能评审的设计文档。",
+            "steps": [
+              "针对一个 Agent 平台写完整设计文档：目标、约束、方案对比、容量测算、失败模式与演进路径",
+              "做一次容量与成本测算（QPS、模型调用量、token 预算、存储增长）",
+              "组织一次架构评审并记录被挑战的点与最终结论，修订文档"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "《Software Architecture: The Hard Parts》核心章节"
+              },
+              {
+                "type": "文档",
+                "name": "AWS Well-Architected Framework（六大支柱）"
+              },
+              {
+                "type": "实践",
+                "name": "沉淀 3 份可公开的设计文档（RFC 风格）"
+              }
+            ],
+            "duration": "3 周",
+            "verification": "一份经评审的架构设计文档（含方案对比与容量测算）。"
+          }
+        },
+        {
+          "name": "Serverless 与弹性伸缩",
+          "aliases": [
+            "Serverless",
+            "弹性伸缩",
+            "无服务器",
+            "FaaS",
+            "函数计算",
+            "按量付费"
+          ],
+          "importance": 2,
+          "learn": {
+            "why": "轻量工具服务与突发流量场景下按量付费能显著降本，是平台侧的可选项。",
+            "focus": "判断哪些 Agent 组件适合 Serverless（工具函数、异步任务），哪些不适合（长连接推理）。",
+            "steps": [
+              "把一个无状态工具函数部署到函数计算平台，测量冷启动延迟与成本",
+              "对比常驻服务与 Serverless 在典型流量曲线下的成本",
+              "写下选型判据：何时用 Serverless、何时必须常驻"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "AWS Lambda 官方文档（冷启动与并发模型）"
+              },
+              {
+                "type": "实践",
+                "name": "一次 Serverless 与常驻服务的成本对比测算"
+              },
+              {
+                "type": "文档",
+                "name": "阿里云函数计算 FC 文档"
+              }
+            ],
+            "duration": "1 周",
+            "verification": "成本对比表格与选型判据文档。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "语言与框架",
+      "skills": [
+        {
+          "name": "Python",
+          "aliases": [
+            "Python",
+            "Python3",
+            "python开发",
+            "脚本开发",
+            "py"
+          ],
+          "importance": 5,
+          "learn": {
+            "why": "AI/Agent 生态的默认语言，岗位池中 Python 是出现频率最高的技能标签之一。",
+            "focus": "达到能写可维护服务与数据处理的工程水准，而不只是会写脚本。",
+            "steps": [
+              "掌握类型注解、dataclass/pydantic、异常体系与包管理（uv/poetry）并重构一个旧脚本",
+              "用 asyncio 写一个并发调用多个模型/工具的异步服务",
+              "补上测试（pytest）、日志与性能分析（cProfile）等工程化能力"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "Python 官方文档（asyncio、typing、contextlib）",
+                "url": "https://docs.python.org/3/"
+              },
+              {
+                "type": "文档",
+                "name": "Pydantic v2 官方文档（数据校验与序列化）"
+              },
+              {
+                "type": "实践",
+                "name": "把一个脚本级项目重构为有类型、有测试的包"
+              }
+            ],
+            "duration": "3 周",
+            "verification": "一个带类型注解、测试覆盖率报告与异步并发实现的 Python 项目。"
+          }
+        },
+        {
+          "name": "TypeScript / JavaScript",
+          "aliases": [
+            "TypeScript",
+            "JavaScript",
+            "TS",
+            "JS",
+            "ES6",
+            "ts开发",
+            "前端开发",
+            "Node.js",
+            "NodeJS"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "Agent 前端、IDE 插件与不少 Agent 框架（如部分 MCP 客户端）都在 TS 生态里。",
+            "focus": "掌握类型系统、异步模型与在 Node 侧写 Agent 工具的能力。",
+            "steps": [
+              "用 TS 写一个 MCP 客户端/工具服务，覆盖泛型、联合类型与类型收窄的实用写法",
+              "掌握 Promise/async 的错误处理与并发控制（Promise.allSettled、AbortController）",
+              "用 zod 做运行时校验并与静态类型对齐，处理流式响应（SSE）"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "TypeScript 官方 Handbook（Narrowing、Generics）",
+                "url": "https://www.typescriptlang.org/docs/"
+              },
+              {
+                "type": "文档",
+                "name": "MDN Web Docs（Fetch、Streams、AbortController）"
+              },
+              {
+                "type": "开源项目",
+                "name": "MCP TypeScript SDK 仓库示例",
+                "url": "https://www.typescriptlang.org/docs/"
+              }
+            ],
+            "duration": "3 周",
+            "verification": "一个 TS 编写的工具服务或客户端仓库，含 zod 校验与流式处理。"
+          }
+        },
+        {
+          "name": "Java",
+          "aliases": [
+            "Java",
+            "JDK",
+            "JVM",
+            "Java开发",
+            "Java工程师"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "国内大厂核心业务仍以 Java 为主，Agent 能力往往要嵌入既有 Java 服务体系。",
+            "focus": "掌握 JVM 调优与在 Java 侧接入大模型/Agent 框架的能力。",
+            "steps": [
+              "用 Spring AI 或 LangChain4j 写一个 Java 版 RAG/工具调用服务",
+              "做一次 JVM 调优实验（GC 日志、堆参数、线程池）并记录指标变化",
+              "处理与 Python 服务互通的边界问题（序列化、超时、重试）"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "Spring AI 官方参考文档"
+              },
+              {
+                "type": "开源项目",
+                "name": "LangChain4j 仓库与示例",
+                "url": "https://python.langchain.com/docs/"
+              },
+              {
+                "type": "文档",
+                "name": "Oracle JVM 调优指南（GC 与内存管理）"
+              }
+            ],
+            "duration": "3 周",
+            "verification": "Java 侧 Agent/RAG 服务代码 + JVM 调优前后性能对比。"
+          }
+        },
+        {
+          "name": "Go",
+          "aliases": [
+            "Go",
+            "Golang",
+            "Go语言",
+            "Go 语言",
+            "Go开发",
+            "Go工程师"
+          ],
+          "importance": 3,
+          "learn": {
+            "why": "Agent 平台的高并发网关、代理与基础设施常用 Go 实现，岗位标签中稳定出现。",
+            "focus": "掌握 goroutine 并发模型与写出高吞吐的网络服务。",
+            "steps": [
+              "用 Go 写一个支持流式转发的模型代理服务（含超时、限流、并发控制）",
+              "掌握 context 取消传播与 goroutine 泄漏排查（pprof）",
+              "做一次压测对比 Go 与 Python 服务的资源占用差异"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "Go 官方文档《Effective Go》与 context 包说明",
+                "url": "https://go.dev/doc/"
+              },
+              {
+                "type": "课程",
+                "name": "《Go by Example》与官方 Tour of Go"
+              },
+              {
+                "type": "实践",
+                "name": "实现并压测一个 Go 版流式代理"
+              }
+            ],
+            "duration": "3 周",
+            "verification": "Go 代理服务仓库 + pprof 排查记录与压测数据。"
+          }
+        },
+        {
+          "name": "C/C++ 与系统编程",
+          "aliases": [
+            "C++",
+            "C语言",
+            "系统编程",
+            "底层开发",
+            "SIMD",
+            "内存管理",
+            "高性能计算"
+          ],
+          "importance": 2,
+          "learn": {
+            "why": "推理引擎、算子与高性能中间件岗位会要求 C/C++，阅读底层实现也需要它。",
+            "focus": "能读懂并小幅修改推理/算子代码，理解内存与并行优化思路。",
+            "steps": [
+              "读一段推理引擎或算子实现（如 llama.cpp 的矩阵乘法），写注释版笔记",
+              "用 SIMD 优化一个计算热点并测量加速比",
+              "用 perf/valgrind 完成一次内存与性能问题排查"
+            ],
+            "resources": [
+              {
+                "type": "开源项目",
+                "name": "llama.cpp 仓库（量化与算子实现）"
+              },
+              {
+                "type": "文档",
+                "name": "Intel Intrinsics Guide（SIMD 指令查询）"
+              },
+              {
+                "type": "实践",
+                "name": "完成一次热点函数优化并给出加速比"
+              }
+            ],
+            "duration": "4 周",
+            "verification": "优化前后基准测试数据 + 源码阅读笔记。"
+          }
+        },
+        {
+          "name": "Web 服务框架（FastAPI/Flask/Django）",
+          "aliases": [
+            "FastAPI",
+            "Flask",
+            "Django",
+            "Web框架",
+            "RESTful API",
+            "REST API",
+            "接口开发",
+            "Fast API",
+            "接口设计",
+            "接口开发经验",
+            "协议设计",
+            "接口契约"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "Agent 能力最终多以 API 形式对外提供，岗位常要求能独立完成后端接口开发。",
+            "focus": "用 FastAPI 写出带校验、鉴权、流式响应与可观测的高质量接口。",
+            "steps": [
+              "实现一组 CRUD + 流式（SSE）接口，用 pydantic 做入参出参校验与错误码规范",
+              "加入鉴权、限流、请求日志与 trace id 透传",
+              "写 OpenAPI 文档并补集成测试，验证并发下的稳定性"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "FastAPI 官方文档（依赖注入、SSE、后台任务）",
+                "url": "https://fastapi.tiangolo.com/"
+              },
+              {
+                "type": "文档",
+                "name": "Django 官方文档（ORM 与 DRF 概览）",
+                "url": "https://go.dev/doc/"
+              },
+              {
+                "type": "实践",
+                "name": "为自有 Agent 项目补齐规范的对外 API"
+              }
+            ],
+            "duration": "2 周",
+            "verification": "接口仓库 + OpenAPI 文档 + 集成测试与并发测试结果。"
+          }
+        },
+        {
+          "name": "Spring 生态",
+          "aliases": [
+            "Spring",
+            "SpringBoot",
+            "Spring Boot",
+            "SpringCloud",
+            "Spring Cloud",
+            "MyBatis",
+            "SpringMVC",
+            "IOC",
+            "AOP"
+          ],
+          "importance": 3,
+          "learn": {
+            "why": "国内中大型企业服务端的技术底座，Agent 能力落地常需要嵌入 Spring 应用。",
+            "focus": "掌握 Spring Boot 自动装配与在既有服务体系里接入 AI 能力的方法。",
+            "steps": [
+              "搭一个 Spring Boot 服务，接入 Spring AI 完成一次模型调用与工具注册",
+              "理解自动装配、AOP 与事务边界，写一个切面做统一日志与限流",
+              "补上配置中心、健康检查与优雅停机等生产化要点"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "Spring Boot 官方参考文档"
+              },
+              {
+                "type": "文档",
+                "name": "Spring AI 官方文档（ChatClient 与 Tool 注册）"
+              },
+              {
+                "type": "实践",
+                "name": "把模型调用封装成 Spring 服务并接入现有工程"
+              }
+            ],
+            "duration": "3 周",
+            "verification": "Spring Boot 服务代码 + 部署与健康检查说明。"
+          }
+        },
+        {
+          "name": "Agent 开发框架（LangChain/LlamaIndex）",
+          "aliases": [
+            "LangChain",
+            "LlamaIndex",
+            "LangGraph",
+            "LangSmith",
+            "Llama Index",
+            "Agent SDK",
+            "OpenAI Agents SDK",
+            "框架二次开发"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "JD 反复出现「深入研究过主流开源 agent 框架，有自己的理解和判断」这一加分项。",
+            "focus": "会用，更要能说出其抽象边界与局限，能在必要时替换或自研。",
+            "steps": [
+              "用 LangChain 或 LlamaIndex 完成一次端到端 Agent/RAG 应用并读通关键源码路径",
+              "用 LangGraph 实现有状态多步流程（含 checkpointer 与 interrupt）",
+              "写一篇框架对比评测（抽象、调试体验、生产适配度），给出选型建议"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "LangChain / LangGraph 官方文档与教程",
+                "url": "https://langchain-ai.github.io/langgraph/"
+              },
+              {
+                "type": "文档",
+                "name": "LlamaIndex 官方文档（Workflows 与 Agent）",
+                "url": "https://docs.llamaindex.ai/"
+              },
+              {
+                "type": "实践",
+                "name": "发表一篇框架源码阅读与选型对比文章"
+              }
+            ],
+            "duration": "3 周",
+            "verification": "基于框架的完整应用 + 框架对比评测文章或技术分享。"
+          }
+        },
+        {
+          "name": "前端工程与全栈交付",
+          "aliases": [
+            "React",
+            "Vue",
+            "Next.js",
+            "前端",
+            "HTML",
+            "CSS",
+            "全栈",
+            "前端开发经验",
+            "全栈项目经验"
+          ],
+          "importance": 3,
+          "learn": {
+            "why": "多个岗位要求「智能体全栈方向」，能自己把 Agent 能力做成可用的界面大幅提升交付速度。",
+            "focus": "能独立完成一个可用的 Agent 交互界面（流式输出、工具过程可视化、人工确认）。",
+            "steps": [
+              "用 React/Next.js 实现聊天界面：SSE 流式渲染、Markdown 与代码高亮、中断与重试",
+              "实现工具调用过程可视化与人工确认按钮，把 Agent 状态机映射到 UI",
+              "做一次性能与体验优化（虚拟滚动、首屏加载、错误兜底）"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "Vercel AI SDK 官方文档（useChat 与流式 UI）"
+              },
+              {
+                "type": "文档",
+                "name": "React 官方文档（Hooks 与并发特性）",
+                "url": "https://arxiv.org/abs/2210.03629"
+              },
+              {
+                "type": "实践",
+                "name": "交付一个自用 Agent 前端并上线可用"
+              }
+            ],
+            "duration": "3 周",
+            "verification": "可访问的前端界面 + 流式/中断/审批功能演示。"
+          }
+        },
+        {
+          "name": "PyTorch 与深度学习框架",
+          "aliases": [
+            "PyTorch",
+            "TensorFlow",
+            "HuggingFace",
+            "Transformers",
+            "Megatron",
+            "MegatronLM",
+            "DeepSpeed",
+            "TorchTitan",
+            "torch"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "训练与微调类岗位的必备工具链，岗位标签中 pytorch / Megatron / DeepSpeed 高频出现。",
+            "focus": "掌握用 transformers 生态做推理、微调与分布式训练的基本流程。",
+            "steps": [
+              "用 transformers 完成一次模型加载、批量推理与 LoRA 微调闭环",
+              "理解并跑通一次 DeepSpeed 或 FSDP 的显存优化配置，记录显存变化",
+              "把训练脚本工程化（配置化、断点续训、日志与 checkpoint 管理）"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "HuggingFace Transformers 官方文档与课程",
+                "url": "https://huggingface.co/docs"
+              },
+              {
+                "type": "文档",
+                "name": "PyTorch 官方教程（Distributed / FSDP）",
+                "url": "https://pytorch.org/docs/"
+              },
+              {
+                "type": "开源项目",
+                "name": "DeepSpeed 仓库（ZeRO 阶段说明）"
+              }
+            ],
+            "duration": "4 周",
+            "verification": "可复现的训练/微调脚本与显存、耗时、效果记录。"
+          }
+        },
+        {
+          "name": "Git 与开源协作",
+          "aliases": [
+            "Git",
+            "代码评审",
+            "Code Review",
+            "开源项目",
+            "开源贡献",
+            "GitHub",
+            "优秀开源项目经历",
+            "分支管理"
+          ],
+          "importance": 3,
+          "learn": {
+            "why": "「有 agent 相关的开源项目或贡献」是 JD 明写的加分项，也是能力最可信的证明方式。",
+            "focus": "学会用开源方式展示工程能力：可复现的 README、清晰的提交与评审记录。",
+            "steps": [
+              "把一个自研项目整理成可复现仓库（README、架构图、快速开始、License、示例数据）",
+              "向一个 Agent 相关开源项目提一个有质量的 PR（修 bug 或补文档/示例）并走完评审",
+              "建立提交规范与分支策略，配置 issue/PR 模板与 CI 徽章"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "GitHub 官方文档《About pull requests》与开源指南"
+              },
+              {
+                "type": "文档",
+                "name": "Pro Git 中文版（分支与协作模型章节）"
+              },
+              {
+                "type": "实践",
+                "name": "维护一个持续提交 3 个月以上的 Agent 相关仓库"
+              }
+            ],
+            "duration": "持续进行",
+            "verification": "GitHub 主页可见的仓库与已合并 PR 记录。"
+          }
+        },
+        {
+          "name": "测试与代码质量",
+          "aliases": [
+            "单元测试",
+            "pytest",
+            "测试",
+            "质量保障",
+            "代码规范",
+            "重构",
+            "静态检查",
+            "类型检查"
+          ],
+          "importance": 3,
+          "learn": {
+            "why": "Agent 系统不确定性高，没有测试与回归机制就无法安全迭代，工程岗普遍要求在简历里体现质量意识。",
+            "focus": "为不确定系统设计可回归的测试策略。",
+            "steps": [
+              "把 Agent 流程拆成可单测的纯函数（提示组装、解析、校验）并补单测",
+              "为 LLM 调用建立 mock/录制回放机制，让测试稳定可重复",
+              "建立效果回归测试（固定评测集 + 阈值）并接入 CI"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "pytest 官方文档（fixture、参数化、mock）"
+              },
+              {
+                "type": "文档",
+                "name": "VCR.py / respx 录制回放工具文档"
+              },
+              {
+                "type": "实践",
+                "name": "为 Agent 项目补一套可重复运行的回归测试"
+              }
+            ],
+            "duration": "2 周",
+            "verification": "测试代码与覆盖率报告 + 评测回归在 CI 中的运行记录。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "数据与评测",
+      "skills": [
+        {
+          "name": "评测体系与指标设计",
+          "aliases": [
+            "评测",
+            "Evaluation",
+            "Eval",
+            "评测集",
+            "Benchmark",
+            "指标设计",
+            "效果评估",
+            "质量评估",
+            "测试集",
+            "评测指标"
+          ],
+          "importance": 5,
+          "learn": {
+            "why": "JD 原话「有评测意识，知道怎么选指标、怎么衡量 AI 的活干得好不好」，这是 Agent 岗位最核心的方法论能力。",
+            "focus": "为不确定系统定义可度量、可复现、能暴露真实问题的指标。",
+            "steps": [
+              "为一个真实任务设计评测方案：任务定义、指标口径、样本分层、通过标准",
+              "构建 100-300 条评测集（含难例与边界例），实现自动评分脚本",
+              "把评测接入日常迭代流程，每次变更输出指标对比并记录决策"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "OpenAI Evals 官方文档与开源仓库"
+              },
+              {
+                "type": "文档",
+                "name": "Google《Model Cards for Model Reporting》与指标设计实践"
+              },
+              {
+                "type": "开源项目",
+                "name": "RAGAS / DeepEval 评测框架仓库",
+                "url": "https://docs.ragas.io/"
+              }
+            ],
+            "duration": "3 周",
+            "verification": "一份评测方案文档 + 可一键运行的评测集与评分脚本 + 至少两轮迭代的指标对比。"
+          }
+        },
+        {
+          "name": "LLM-as-Judge 自动评估",
+          "aliases": [
+            "LLM-as-Judge",
+            "模型评审",
+            "自动评估",
+            "AI评审",
+            "打分模型",
+            "判官模型",
+            "Judge模型",
+            "大模型评审"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "规模化评估必须靠模型打分，同时要证明打分本身可信，这是 JD 里「什么时候指标本身已经不可信」的考点。",
+            "focus": "会设计评分 rubric，并度量 Judge 与人工的一致性。",
+            "steps": [
+              "为业务设计带锚点的评分 rubric（分档定义 + 反例），实现批量打分脚本",
+              "抽样 50-100 条做人工标注，计算与 Judge 的一致率（如 Cohen's kappa）并修正 rubric",
+              "处理位置偏见与长度偏见（交换顺序、双盲投票、成对比较）"
+            ],
+            "resources": [
+              {
+                "type": "论文",
+                "name": "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena（Zheng et al., 2023）"
+              },
+              {
+                "type": "开源项目",
+                "name": "promptfoo / DeepEval 的 LLM rubric 评分实现"
+              },
+              {
+                "type": "实践",
+                "name": "产出一份 Judge 与人工一致性的校准报告"
+              }
+            ],
+            "duration": "2 周",
+            "verification": "评分 rubric + 打分脚本 + 与人工标注的一致率数据。"
+          }
+        },
+        {
+          "name": "Badcase 分析与迭代闭环",
+          "aliases": [
+            "badcase",
+            "bad case",
+            "案例复盘",
+            "错误分析",
+            "效果回归",
+            "问题定位",
+            "case分析",
+            "归因分析"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "JD 要求「把零散的 badcase 收敛成可度量、可持续优化的指标」，这是从救火走向体系化的关键。",
+            "focus": "建立 badcase 采集、归类、归因到修复验证的完整闭环。",
+            "steps": [
+              "建立 badcase 采集通道（用户反馈、线上日志抽样、评测失败项）与统一登记表",
+              "做一次全量归类归因（上下文/工具/编排/模型/数据），画出问题分布图",
+              "针对 Top 问题做修复并用回归集验证不再复现"
+            ],
+            "resources": [
+              {
+                "type": "实践",
+                "name": "建立团队 badcase 看板与每周复盘机制"
+              },
+              {
+                "type": "文档",
+                "name": "Google SRE Workbook 的事后复盘（Postmortem）方法",
+                "url": "https://sre.google/sre-book/"
+              },
+              {
+                "type": "开源项目",
+                "name": "Langfuse / LangSmith 的失败样本追踪功能"
+              }
+            ],
+            "duration": "持续进行",
+            "verification": "badcase 分布图 + 至少一次「归因→修复→回归验证」的完整记录。"
+          }
+        },
+        {
+          "name": "Agent 轨迹与过程评估",
+          "aliases": [
+            "轨迹评估",
+            "trace评估",
+            "Agent评测",
+            "链路评估",
+            "过程评估",
+            "轨迹回放",
+            "步骤级评估"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "只看最终答案无法定位 Agent 问题，岗位池中已出现专门的「agent 评测工程师」。",
+            "focus": "从最终结果评估升级到步骤级评估：工具选对了吗、路径是否冗余。",
+            "steps": [
+              "定义轨迹级指标：工具选择准确率、无效步数占比、重试率、路径最短率",
+              "实现轨迹采集与自动标注（成功/失败/冗余），建立回归对比能力",
+              "用轨迹数据定位一个真实效果问题并验证修复"
+            ],
+            "resources": [
+              {
+                "type": "论文",
+                "name": "AgentBench: Evaluating LLMs as Agents（Liu et al., 2023）"
+              },
+              {
+                "type": "论文",
+                "name": "τ-bench: A Benchmark for Tool-Agent-User Interaction（2024）"
+              },
+              {
+                "type": "文档",
+                "name": "OpenTelemetry GenAI 语义约定（span 字段规范）"
+              }
+            ],
+            "duration": "2-3 周",
+            "verification": "轨迹评估指标定义 + 自动标注脚本 + 一次基于轨迹的问题定位复盘。"
+          }
+        },
+        {
+          "name": "A/B 实验与线上验证",
+          "aliases": [
+            "A/B测试",
+            "AB实验",
+            "ABTest",
+            "灰度",
+            "线上验证",
+            "实验平台",
+            "对照实验",
+            "线上效果"
+          ],
+          "importance": 3,
+          "learn": {
+            "why": "离线指标不等于业务收益，能设计线上实验是资深工程师与普通工程师的分界。",
+            "focus": "掌握分流、样本量与业务指标的实验设计。",
+            "steps": [
+              "设计一次线上实验：假设、分流方式、主/辅指标、样本量与观察周期",
+              "实现分流与埋点，跑完实验并做显著性判断",
+              "处理常见陷阱（样本污染、指标漂移、辛普森悖论）并复盘"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "《Trustworthy Online Controlled Experiments》（Ron Kohavi 等）"
+              },
+              {
+                "type": "文档",
+                "name": "Microsoft EXP 平台论文《Online Controlled Experiments at Large Scale》"
+              },
+              {
+                "type": "实践",
+                "name": "完整跑一次线上 A/B 并输出实验报告"
+              }
+            ],
+            "duration": "3 周",
+            "verification": "一份实验设计 + 结果报告（含显著性结论与决策）。"
+          }
+        },
+        {
+          "name": "数据清洗与治理",
+          "aliases": [
+            "数据清洗",
+            "数据治理",
+            "数据质量",
+            "ETL",
+            "数据管道",
+            "数据工程",
+            "去重",
+            "脏数据"
+          ],
+          "importance": 3,
+          "learn": {
+            "why": "RAG 与微调的上限都由数据质量决定，「数据工程」也是岗位池中的常见标签。",
+            "focus": "建立可复现的数据流水线与质量校验。",
+            "steps": [
+              "为业务语料实现清洗流水线（解析、去噪、去重、脱敏、质量打分）并记录各步丢弃率",
+              "定义数据质量校验规则（完整性、一致性、时效性）并加自动告警",
+              "建立数据版本与血缘，让线上问题可回溯到数据批次"
+            ],
+            "resources": [
+              {
+                "type": "开源项目",
+                "name": "Great Expectations 数据质量校验框架"
+              },
+              {
+                "type": "文档",
+                "name": "dbt 官方文档（数据建模与血缘）"
+              },
+              {
+                "type": "论文",
+                "name": "Deduplicating Training Data Makes Language Models Better（Lee et al., 2021）"
+              }
+            ],
+            "duration": "3 周",
+            "verification": "数据流水线代码 + 质量报告（各环节丢弃率与校验结果）。"
+          }
+        },
+        {
+          "name": "SQL 与数据分析",
+          "aliases": [
+            "SQL",
+            "数据分析",
+            "Hive",
+            "Spark",
+            "ClickHouse",
+            "数据仓库",
+            "大数据",
+            "SQL Server",
+            "数据建模"
+          ],
+          "importance": 3,
+          "learn": {
+            "why": "用数据说话是评测与迭代的前提，岗位标签中 SQL / Hive / Spark 出现稳定。",
+            "focus": "能独立完成从取数到结论的分析闭环。",
+            "steps": [
+              "写复杂 SQL（窗口函数、多表关联）完成一次 Agent 使用行为分析",
+              "用 Hive/Spark 或 ClickHouse 处理亿级日志并做聚合与漏斗分析",
+              "把分析结论转成可执行的产品或工程改进项并跟踪验证"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "《SQL 必知必会》与 PostgreSQL 窗口函数官方文档",
+                "url": "https://www.postgresql.org/docs/"
+              },
+              {
+                "type": "文档",
+                "name": "ClickHouse 官方文档（物化视图与聚合优化）"
+              },
+              {
+                "type": "实践",
+                "name": "产出一份基于真实日志的 Agent 使用分析报告"
+              }
+            ],
+            "duration": "2-3 周",
+            "verification": "分析报告 + 可复用的 SQL 脚本与结论落地记录。"
+          }
+        },
+        {
+          "name": "用户反馈闭环",
+          "aliases": [
+            "用户反馈",
+            "反馈闭环",
+            "满意度",
+            "反馈机制",
+            "用户调研",
+            "NPS"
+          ],
+          "importance": 3,
+          "learn": {
+            "why": "反馈是效果评估的线上信号源，JD 要求建立「反馈自省闭环」。",
+            "focus": "把零散反馈转成结构化、可追踪的改进项。",
+            "steps": [
+              "设计反馈入口（点赞点踩、问题分类、文字描述）并定义字段与埋点",
+              "建立反馈到 badcase 再到评测集的转化流程",
+              "按月统计高频问题并跟踪修复率"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "《The Lean Product Playbook》中的反馈闭环方法"
+              },
+              {
+                "type": "开源项目",
+                "name": "Langfuse 用户反馈标注功能"
+              },
+              {
+                "type": "实践",
+                "name": "把 100 条真实用户反馈分类并转成改进项"
+              }
+            ],
+            "duration": "1-2 周",
+            "verification": "反馈分类表 + 从反馈到评测集与修复的闭环记录。"
+          }
+        },
+        {
+          "name": "实验跟踪与模型版本管理",
+          "aliases": [
+            "实验管理",
+            "MLflow",
+            "WandB",
+            "模型版本",
+            "实验跟踪",
+            "版本管理",
+            "模型注册",
+            "A/B版本"
+          ],
+          "importance": 2,
+          "learn": {
+            "why": "模型与提示词都在快速迭代，没有版本与实验管理就无法复现结果。",
+            "focus": "让每次实验可复现、可对比、可回滚。",
+            "steps": [
+              "用 MLflow 或 W&B 记录训练/评测实验的参数与指标",
+              "把提示词、模型版本、评测集纳入统一版本管理并建立命名规范",
+              "实现一次模型或提示的版本切换与回滚演练"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "MLflow 官方文档（Tracking 与 Model Registry）"
+              },
+              {
+                "type": "文档",
+                "name": "Weights & Biases 官方文档（Experiment Tracking）"
+              },
+              {
+                "type": "实践",
+                "name": "为现有项目接入实验跟踪并回填历史结果"
+              }
+            ],
+            "duration": "1-2 周",
+            "verification": "可访问的实验看板与版本命名规范文档。"
+          }
+        },
+        {
+          "name": "数据合成与标注管理",
+          "aliases": [
+            "数据合成",
+            "合成数据",
+            "数据增强",
+            "标注平台",
+            "数据标注",
+            "标注管理",
+            "弱监督"
+          ],
+          "importance": 2,
+          "learn": {
+            "why": "高质量标注数据稀缺，用模型合成+人工校验是当前主流的数据生产手段。",
+            "focus": "控制合成数据的质量与分布偏差。",
+            "steps": [
+              "用强模型合成一批指令数据并按规则过滤，人工抽检质量",
+              "设计标注规范与一致性校验（多人交叉标注、抽检仲裁）",
+              "评估合成数据对下游任务的实际增益与引入的偏差"
+            ],
+            "resources": [
+              {
+                "type": "论文",
+                "name": "Self-Instruct / Alpagasus 数据筛选方法"
+              },
+              {
+                "type": "开源项目",
+                "name": "Label Studio 标注平台文档"
+              },
+              {
+                "type": "实践",
+                "name": "完成一次合成数据 + 人工抽检的完整流程"
+              }
+            ],
+            "duration": "2 周",
+            "verification": "数据合成与过滤脚本 + 质量抽检报告与增益实验数据。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "治理与安全",
+      "skills": [
+        {
+          "name": "权限与访问控制",
+          "aliases": [
+            "RBAC",
+            "权限治理",
+            "权限控制",
+            "访问控制",
+            "ABAC",
+            "最小权限",
+            "鉴权",
+            "权限系统",
+            "ToolGateway"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "Agent 会代替人执行真实操作，权限边界是上线的前提，「默认拒绝、最小权限」是行业共识。",
+            "focus": "为工具与数据设计可审计、可收敛的权限模型。",
+            "steps": [
+              "设计 RBAC + 资源标签的混合权限模型，覆盖工具、数据源与操作类型",
+              "实现默认拒绝、权限继承与租户隔离，并写清授权决策的判定顺序",
+              "做一次越权测试（横向与纵向），验证拦截有效性"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "NIST RBAC 标准（INCITS 359）与 Google Zanzibar 论文"
+              },
+              {
+                "type": "开源项目",
+                "name": "Casbin / OpenFGA 授权引擎文档"
+              },
+              {
+                "type": "文档",
+                "name": "OWASP Authorization Cheat Sheet"
+              }
+            ],
+            "duration": "2-3 周",
+            "verification": "权限模型设计文档 + 越权测试报告（含拦截日志）。"
+          }
+        },
+        {
+          "name": "Prompt 注入与越狱防护",
+          "aliases": [
+            "Prompt注入",
+            "提示注入",
+            "Prompt Injection",
+            "越狱",
+            "jailbreak",
+            "注入攻击",
+            "提示词注入",
+            "间接注入"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "Agent 会读取外部内容（网页、文档、工具返回），间接注入是最现实的攻击面。",
+            "focus": "能识别注入路径并做输入隔离、指令层级与输出校验的纵深防御。",
+            "steps": [
+              "复现 5 类注入攻击（直接覆盖、角色扮演、工具返回注入、编码绕过、多轮诱导）",
+              "实现防御：内容标记与隔离、指令优先级、工具白名单、输出与行动二次校验",
+              "建立注入测试集做回归，测量防御前后的攻击成功率"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "OWASP Top 10 for LLM Applications（LLM01 Prompt Injection）"
+              },
+              {
+                "type": "论文",
+                "name": "Not what you've signed up for: Compromising Real-World LLM-Integrated Applications（Greshake et al., 2023）"
+              },
+              {
+                "type": "开源项目",
+                "name": "garak / promptfoo 红队测试工具"
+              }
+            ],
+            "duration": "2-3 周",
+            "verification": "注入测试集 + 防御代码 + 攻击成功率前后对比数据。"
+          }
+        },
+        {
+          "name": "内容安全与合规",
+          "aliases": [
+            "内容安全",
+            "合规",
+            "敏感词",
+            "内容审核",
+            "风控",
+            "算法备案",
+            "数据合规",
+            "安全合规",
+            "伦理"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "国内业务上线必须过内容安全与算法备案，To B 交付尤其看重。",
+            "focus": "把审核与合规要求落到工程链路而非事后补救。",
+            "steps": [
+              "梳理业务涉及的合规要求（生成内容审核、数据出境、算法备案、日志留存）并形成清单",
+              "实现输入输出双向审核链路（规则 + 模型审核）与命中处置策略",
+              "准备备案与安全评估所需的材料与可证明材料"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "《生成式人工智能服务管理暂行办法》与《互联网信息服务算法推荐管理规定》"
+              },
+              {
+                "type": "文档",
+                "name": "阿里云/腾讯云内容安全 API 文档"
+              },
+              {
+                "type": "实践",
+                "name": "产出一份产品合规清单与审核链路设计"
+              }
+            ],
+            "duration": "2-3 周",
+            "verification": "合规清单 + 审核链路实现 + 处置策略说明文档。"
+          }
+        },
+        {
+          "name": "数据隐私与脱敏",
+          "aliases": [
+            "隐私",
+            "数据脱敏",
+            "脱敏",
+            "PII",
+            "隐私计算",
+            "数据安全",
+            "保密",
+            "匿名化"
+          ],
+          "importance": 3,
+          "learn": {
+            "why": "把企业数据送进模型是最大的合规风险点，脱敏与最小化采集是硬要求。",
+            "focus": "在数据链路各环节识别并处置敏感信息。",
+            "steps": [
+              "实现 PII 识别与脱敏（正则 + 模型识别），覆盖文本与文件输入",
+              "设计最小化采集与保留策略（存什么、存多久、谁能看）",
+              "评估脱敏对效果的影响并做补偿设计（如占位符回填）"
+            ],
+            "resources": [
+              {
+                "type": "开源项目",
+                "name": "Microsoft Presidio（PII 检测与脱敏）"
+              },
+              {
+                "type": "文档",
+                "name": "《个人信息保护法》要点与企业落地指南"
+              },
+              {
+                "type": "实践",
+                "name": "在真实数据链路上接入脱敏并做效果回归"
+              }
+            ],
+            "duration": "2 周",
+            "verification": "脱敏模块代码 + 隐私数据处理规范 + 效果影响评估。"
+          }
+        },
+        {
+          "name": "审计与可回放",
+          "aliases": [
+            "审计",
+            "回放",
+            "决策轨迹",
+            "可追溯",
+            "审计日志",
+            "Audit",
+            "可解释",
+            "可解释性"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "JD 明写「让 agent 的每一次决策可追溯、可回放、可解释」，金融与政企场景更是强要求。",
+            "focus": "设计高保真、低开销的决策留痕与回放能力。",
+            "steps": [
+              "定义审计事件模型（谁、何时、基于什么上下文、调用了什么、结果如何）并实现落库",
+              "实现轨迹回放：用相同输入与历史环境重现一次决策过程",
+              "处理敏感信息与留存成本（脱敏存储、冷热分层、保留期策略）"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "OpenTelemetry GenAI 语义约定（决策事件字段）"
+              },
+              {
+                "type": "文档",
+                "name": "《Designing Data-Intensive Applications》关于不可变事件日志的章节",
+                "url": "https://dataintensive.net/"
+              },
+              {
+                "type": "实践",
+                "name": "实现一次可回放的决策轨迹演示"
+              }
+            ],
+            "duration": "2-3 周",
+            "verification": "审计事件模型 + 回放演示 + 留存与脱敏策略说明。"
+          }
+        },
+        {
+          "name": "成本与预算治理",
+          "aliases": [
+            "成本控制",
+            "Token成本",
+            "预算",
+            "成本优化",
+            "降本",
+            "计费",
+            "成本审计",
+            "Token消耗",
+            "成本核算"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "token 成本直接决定业务可行性，JD 要求「支撑预算与成本审计」，是应用工程师的核心经营意识。",
+            "focus": "建立按任务/租户的成本归集、预算熔断与优化手段库。",
+            "steps": [
+              "实现 token 计量与成本归集（按用户、任务、模型、工具维度）并出报表",
+              "设置预算阈值与熔断降级策略（超限降级模型、拒绝新任务、通知）",
+              "落地至少 3 项降本手段（缓存、模型分级路由、上下文裁剪）并量化节省"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "各模型厂商 pricing 文档与 token 计费口径说明"
+              },
+              {
+                "type": "开源项目",
+                "name": "LiteLLM 的预算与用量控制功能"
+              },
+              {
+                "type": "实践",
+                "name": "产出成本看板与降本措施清单及节省测算"
+              }
+            ],
+            "duration": "2 周",
+            "verification": "成本看板 + 预算熔断代码 + 降本前后的单位任务成本对比。"
+          }
+        },
+        {
+          "name": "可靠性与故障安全",
+          "aliases": [
+            "故障安全",
+            "fail-safe",
+            "默认拒绝",
+            "熔断降级",
+            "SLA",
+            "安全边界",
+            "灾难恢复",
+            "高可用",
+            "容灾"
+          ],
+          "importance": 3,
+          "learn": {
+            "why": "「故障安全关闭」是治理设计的核心原则：异常时必须退到安全状态而不是放开权限。",
+            "focus": "为关键路径定义失败时的安全默认行为。",
+            "steps": [
+              "梳理关键路径的失败模式并逐条定义安全默认值（拒绝执行、只读、转人工）",
+              "实现熔断与降级开关并做灰度开关演练",
+              "定义 SLA/SLO 与错误预算，建立超限时的产品级决策机制"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "Google SRE Book（SLO 与错误预算章节）",
+                "url": "https://sre.google/sre-book/"
+              },
+              {
+                "type": "开源项目",
+                "name": "Resilience4j / Polly 熔断降级实现"
+              },
+              {
+                "type": "实践",
+                "name": "做一次降级开关的全链路演练"
+              }
+            ],
+            "duration": "2 周",
+            "verification": "失败模式与安全默认值清单 + 演练记录。"
+          }
+        },
+        {
+          "name": "红队测试与对抗评估",
+          "aliases": [
+            "红队",
+            "Red Team",
+            "对抗测试",
+            "安全评估",
+            "渗透测试",
+            "越狱测试",
+            "安全测试"
+          ],
+          "importance": 3,
+          "learn": {
+            "why": "上线前的对抗测试是发现真实漏洞的唯一有效手段，加分项中常与安全能力绑定。",
+            "focus": "用系统化方法持续攻击自己的系统并沉淀防御。",
+            "steps": [
+              "建立红队用例库（注入、越权、数据泄露、拒绝服务、有害内容）",
+              "用自动化工具批量执行并生成风险报告（含严重级别与复现步骤）",
+              "跟踪修复并做复测，形成固定的上线前安全检查项"
+            ],
+            "resources": [
+              {
+                "type": "开源项目",
+                "name": "NVIDIA garak（LLM 漏洞扫描）"
+              },
+              {
+                "type": "文档",
+                "name": "Microsoft AI Red Team 公开指南"
+              },
+              {
+                "type": "实践",
+                "name": "组织一次内部红队演练并输出风险报告"
+              }
+            ],
+            "duration": "2 周",
+            "verification": "红队用例库 + 风险报告 + 复测通过记录。"
+          }
+        },
+        {
+          "name": "模型与供应链风险",
+          "aliases": [
+            "模型风险",
+            "开源许可",
+            "供应链安全",
+            "模型选型",
+            "依赖管理",
+            "开源协议",
+            "供应商"
+          ],
+          "importance": 2,
+          "learn": {
+            "why": "模型与三方依赖都可能带来许可、可用性与数据流向风险，选型时需要提前评估。",
+            "focus": "建立模型与依赖的风险评估与备份机制。",
+            "steps": [
+              "为在用模型与依赖建立清单（许可、部署方式、数据条款、SLA）",
+              "评估单一供应商风险并设计多模型可切换抽象层",
+              "制定模型下线/涨价/不可用时的应急预案"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "各模型 License 与商用条款（如 Llama Community License）"
+              },
+              {
+                "type": "文档",
+                "name": "SLSA 供应链安全框架与 SBOM 实践"
+              },
+              {
+                "type": "实践",
+                "name": "产出模型选型与风险清单"
+              }
+            ],
+            "duration": "1-2 周",
+            "verification": "模型/依赖风险清单 + 多模型切换抽象层代码或预案文档。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "业务领域",
+      "skills": [
+        {
+          "name": "AI 产品与场景落地",
+          "aliases": [
+            "产品落地",
+            "场景落地",
+            "业务落地",
+            "AI Native",
+            "0到1",
+            "商业化",
+            "落地经验",
+            "业务价值",
+            "降本增效"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "岗位普遍要求「把 AI 用出业务价值」，能把技术翻译成业务收益的人才稀缺。",
+            "focus": "学会做场景筛选与价值量化，先找对题再解题。",
+            "steps": [
+              "用「频次 × 单次耗时 × 容错度」筛选 10 个候选场景并排序",
+              "为 Top 场景写价值测算（人力节省/收入增量/成本下降）与验证方案",
+              "落地一个场景并复盘实际收益与预期差距"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "《Lean Startup》与 AI 产品落地案例集（a16z / Sequoia 公开文章）"
+              },
+              {
+                "type": "实践",
+                "name": "输出一份场景价值测算模板并在团队复用"
+              },
+              {
+                "type": "文档",
+                "name": "McKinsey《The state of AI》行业落地调研"
+              }
+            ],
+            "duration": "3 周",
+            "verification": "场景清单与价值测算文档 + 至少一个场景的实际收益复盘。"
+          }
+        },
+        {
+          "name": "企业服务与 SaaS",
+          "aliases": [
+            "企业服务",
+            "SaaS",
+            "ToB",
+            "CRM",
+            "办公协同",
+            "ERP",
+            "中台",
+            "B端"
+          ],
+          "importance": 3,
+          "learn": {
+            "why": "To B 交付是 Agent 落地最密集的场景，理解其定制化与私有化交付特点很关键。",
+            "focus": "理解 To B 的多租户、私有化部署与定制交付模式。",
+            "steps": [
+              "拆解一个 To B Agent 产品的能力清单与交付形态（SaaS/私有化/混合）",
+              "设计多租户隔离与可配置化方案（能力开关、提示词与知识库按租户隔离）",
+              "梳理私有化部署的交付清单与升级路径"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "《SaaS 创业路线图》与 To B 产品方法论"
+              },
+              {
+                "type": "文档",
+                "name": "Salesforce / 飞书开放平台的多租户设计文档"
+              },
+              {
+                "type": "实践",
+                "name": "为产品写一份私有化交付手册"
+              }
+            ],
+            "duration": "2 周",
+            "verification": "多租户与交付方案文档 + 私有化部署清单。"
+          }
+        },
+        {
+          "name": "金融与支付行业知识",
+          "aliases": [
+            "金融",
+            "支付",
+            "银行",
+            "保险",
+            "交易",
+            "证券",
+            "量化交易"
+          ],
+          "importance": 2,
+          "learn": {
+            "why": "岗位池中金融类公司不少，行业知识能显著缩短需求理解与合规判断时间。",
+            "focus": "理解金融业务的强合规、强审计与准确性要求。",
+            "steps": [
+              "梳理目标细分行业（支付/信贷/证券）的核心业务流程与数据敏感点",
+              "整理该行业的 AI 应用场景与监管红线清单",
+              "针对一个场景写出合规可行的技术方案"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "中国人民银行金融科技发展规划与监管沙盒公开资料"
+              },
+              {
+                "type": "文档",
+                "name": "《支付系统设计》相关公开技术文章"
+              },
+              {
+                "type": "实践",
+                "name": "输出一份行业场景与合规红线清单"
+              }
+            ],
+            "duration": "2 周",
+            "verification": "行业场景清单 + 一份含合规约束的技术方案。"
+          }
+        },
+        {
+          "name": "电商、营销与增长",
+          "aliases": [
+            "电商",
+            "营销",
+            "推荐算法",
+            "广告",
+            "增长",
+            "营销自动化",
+            "用户增长",
+            "广告算法"
+          ],
+          "importance": 2,
+          "learn": {
+            "why": "电商与营销是 Agent 应用最活跃的商业场景之一（导购、投放、内容生成）。",
+            "focus": "理解转化漏斗与 Agent 在其中的介入点。",
+            "steps": [
+              "梳理电商/营销漏斗各环节与可自动化的任务清单",
+              "针对一个环节设计 Agent 方案并定义业务指标",
+              "做小流量验证并计算增量收益"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "阿里/京东公开的智能营销与推荐系统技术文章"
+              },
+              {
+                "type": "文档",
+                "name": "《Growth Hacker Marketing》与增长实验方法"
+              },
+              {
+                "type": "实践",
+                "name": "设计一个营销场景 Agent 方案并做小流量验证"
+              }
+            ],
+            "duration": "2 周",
+            "verification": "场景方案 + 小流量验证的指标变化数据。"
+          }
+        },
+        {
+          "name": "内容与 AIGC 创作",
+          "aliases": [
+            "AIGC",
+            "内容创作",
+            "智能创作",
+            "视频生成",
+            "文生图",
+            "内容生成",
+            "写作",
+            "内容生产"
+          ],
+          "importance": 3,
+          "learn": {
+            "why": "AIGC 内容生产是岗位池中的高频方向，涉及生成质量、风格一致与批量生产的工程化。",
+            "focus": "掌握内容生成的质量控制与批量生产流水线。",
+            "steps": [
+              "搭建一条内容生成流水线（选题→生成→评审→发布）并定义质量门禁",
+              "用参考图/风格提示做一致性控制，量化风格一致性",
+              "建立内容效果数据回收（点击/阅读）并用于迭代"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "Stable Diffusion / 主流文生图模型官方文档与提示指南"
+              },
+              {
+                "type": "实践",
+                "name": "产出批量内容生产流水线与质量门禁脚本"
+              },
+              {
+                "type": "文档",
+                "name": "内容平台创作者激励与审核规则公开资料"
+              }
+            ],
+            "duration": "2-3 周",
+            "verification": "内容流水线 + 质量门禁 + 生成内容的效果数据。"
+          }
+        },
+        {
+          "name": "制造、工业与能源",
+          "aliases": [
+            "制造",
+            "工业",
+            "半导体",
+            "能源",
+            "工业落地",
+            "工业互联网",
+            "物联网"
+          ],
+          "importance": 2,
+          "learn": {
+            "why": "工业场景的 Agent 落地对可靠性与现场约束要求极高，是差异化竞争力。",
+            "focus": "理解工业数据的多源异构与现场部署约束。",
+            "steps": [
+              "梳理一个工业场景的数据源与系统接口（MES/SCADA/ERP）",
+              "设计边缘-云协同的部署方案与降级策略",
+              "针对现场数据质量差的问题设计鲁棒处理方案"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "工业互联网产业联盟公开白皮书"
+              },
+              {
+                "type": "实践",
+                "name": "输出一份工业场景数据与部署约束调研"
+              },
+              {
+                "type": "文档",
+                "name": "OPC UA / Modbus 协议公开规范概览"
+              }
+            ],
+            "duration": "2 周",
+            "verification": "工业场景调研报告 + 边缘部署与降级方案。"
+          }
+        },
+        {
+          "name": "医疗健康与生命科学",
+          "aliases": [
+            "医疗",
+            "医疗健康",
+            "生物",
+            "AI for Science",
+            "生命科学",
+            "科学计算",
+            "药物研发"
+          ],
+          "importance": 2,
+          "learn": {
+            "why": "AI for Science 与医疗是新兴高增长方向，文献理解与数据合规是入门门槛。",
+            "focus": "理解科研/医疗数据的特殊性与准确性要求。",
+            "steps": [
+              "阅读 3 篇 AI for Science 方向论文，梳理任务范式与数据形态",
+              "复现一个公开数据集上的基线实验",
+              "梳理医疗数据的合规与伦理红线"
+            ],
+            "resources": [
+              {
+                "type": "论文",
+                "name": "AlphaFold2 论文与开源实现（Nature, 2021）"
+              },
+              {
+                "type": "文档",
+                "name": "PubMed / 生物医药公开数据集说明（如 ChEMBL、PDB）"
+              },
+              {
+                "type": "实践",
+                "name": "在公开数据集上复现一个领域基线"
+              }
+            ],
+            "duration": "3-4 周",
+            "verification": "论文笔记 + 可复现的基线实验记录。"
+          }
+        },
+        {
+          "name": "交付与客户成功（FDE）",
+          "aliases": [
+            "FDE",
+            "交付",
+            "客户成功",
+            "驻场",
+            "售前",
+            "解决方案",
+            "实施",
+            "交付工程师"
+          ],
+          "importance": 3,
+          "learn": {
+            "why": "岗位池中已出现明确的「Agent/FDE 方向」岗位，要求既能写代码又能面对客户。",
+            "focus": "具备从需求澄清到上线的端到端交付能力。",
+            "steps": [
+              "梳理标准交付流程（需求澄清→POC→实施→验收→运营）与各阶段产出物",
+              "写一套可复用的交付物料（方案模板、部署手册、验收清单）",
+              "独立完成一次客户场景的 POC 并拿到验收反馈"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "Palantir FDE 模式公开解读文章"
+              },
+              {
+                "type": "实践",
+                "name": "沉淀可复用的交付物料模板集"
+              },
+              {
+                "type": "文档",
+                "name": "企业软件实施方法论（如 ASAP / 敏捷交付）"
+              }
+            ],
+            "duration": "持续进行",
+            "verification": "交付物料模板集 + 一次 POC 的客户验收记录。"
+          }
+        },
+        {
+          "name": "开源社区与开发者关系",
+          "aliases": [
+            "开发者关系",
+            "DevRel",
+            "开发者生态",
+            "技术布道",
+            "社区运营",
+            "开源社区",
+            "技术影响力"
+          ],
+          "importance": 2,
+          "learn": {
+            "why": "开发者关系岗位在 AI 公司中快速增加，也反哺个人品牌与技术影响力。",
+            "focus": "能持续产出对开发者有实际价值的内容与示例。",
+            "steps": [
+              "选定一个技术主题，持续产出教程、示例仓库与演示视频",
+              "参与开源社区（答疑、写文档、办活动）并积累可见贡献",
+              "用数据（star、下载、留存）衡量内容效果并迭代选题"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "《Developer Relations》实践指南与 DevRel 社区资源"
+              },
+              {
+                "type": "实践",
+                "name": "连续输出 8 篇以上高质量技术内容"
+              },
+              {
+                "type": "文档",
+                "name": "GitHub Open Source Guides（社区运营）"
+              }
+            ],
+            "duration": "持续进行",
+            "verification": "公开可见的技术内容合集与社区贡献记录。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "通用能力",
+      "skills": [
+        {
+          "name": "技术方案与文档表达",
+          "aliases": [
+            "方案设计",
+            "技术方案",
+            "技术文档",
+            "技术写作",
+            "技术分享",
+            "表达能力",
+            "文档能力"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "Agent 项目跨角色协作密集，能把方案讲清楚的人才能推动决策。",
+            "focus": "写出结构清晰、结论先行、有取舍论证的技术文档。",
+            "steps": [
+              "按「背景-目标-方案对比-结论-风险」写一份 RFC 并组织评审",
+              "做一次 30 分钟技术分享，收集反馈并改进表达结构",
+              "建立个人文档库，沉淀可复用模板"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "Google 技术写作课程（Technical Writing Courses）"
+              },
+              {
+                "type": "文档",
+                "name": "《金字塔原理》与 RFC 模板（如 Rust RFC 仓库）"
+              },
+              {
+                "type": "实践",
+                "name": "公开输出 3 篇以上可评审的设计文档"
+              }
+            ],
+            "duration": "持续进行",
+            "verification": "公开的技术文档/分享材料 + 评审反馈记录。"
+          }
+        },
+        {
+          "name": "业务理解与需求拆解",
+          "aliases": [
+            "业务理解",
+            "需求拆解",
+            "需求分析",
+            "业务分析",
+            "业务抽象",
+            "领域建模"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "Agent 效果一半取决于对业务流程的抽象是否准确，JD 强调「业务理解与落地」。",
+            "focus": "把模糊口述需求转成可执行的任务与验收标准。",
+            "steps": [
+              "对一个真实业务做流程访谈并画出流程与角色图",
+              "把需求拆成任务清单、验收标准与优先级",
+              "交付后用验收标准核对实际达成度并复盘偏差"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "《领域驱动设计》核心概念（限界上下文、通用语言）"
+              },
+              {
+                "type": "实践",
+                "name": "完成一次从访谈到验收标准的完整需求拆解"
+              },
+              {
+                "type": "文档",
+                "name": "User Story Mapping 方法资料"
+              }
+            ],
+            "duration": "2-3 周",
+            "verification": "业务流程图 + 需求拆解表 + 验收标准与达成度复盘。"
+          }
+        },
+        {
+          "name": "跨团队协作与沟通",
+          "aliases": [
+            "跨团队",
+            "沟通",
+            "协作",
+            "远程协作",
+            "跨部门",
+            "协同",
+            "团队协作"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "Agent 项目天然横跨算法、后端、产品与业务，岗位普遍标注「跨团队协作」。",
+            "focus": "建立异步协作习惯与清晰的接口式沟通。",
+            "steps": [
+              "用书面方式对齐一次跨团队目标（产出接口、依赖与时间点）",
+              "建立异步沟通规范（周报、决策记录、议题清单）",
+              "复盘一次协作冲突并沉淀改进机制"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "GitLab Handbook（全远程异步协作实践）"
+              },
+              {
+                "type": "实践",
+                "name": "在团队内推行决策记录（ADR）机制"
+              },
+              {
+                "type": "文档",
+                "name": "《非暴力沟通》与跨部门协作方法"
+              }
+            ],
+            "duration": "持续进行",
+            "verification": "协作规范文档 + 一次跨团队项目的复盘记录。"
+          }
+        },
+        {
+          "name": "项目管理与推进",
+          "aliases": [
+            "项目管理",
+            "进度管理",
+            "推动落地",
+            "跨团队推动",
+            "协调",
+            "落地推进",
+            "排期"
+          ],
+          "importance": 3,
+          "learn": {
+            "why": "技术方案能落地才算数，推进能力决定产出节奏。",
+            "focus": "用里程碑与风险清单管理不确定性高的项目。",
+            "steps": [
+              "为一个项目制定里程碑、依赖与风险清单并公开跟踪",
+              "建立每周节奏（进展、阻塞、下周计划）并坚持一个季度",
+              "复盘一次延期或返工的原因并改进流程"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "《人月神话》与敏捷项目管理的公开资料"
+              },
+              {
+                "type": "实践",
+                "name": "公开维护一份项目看板并持续更新"
+              },
+              {
+                "type": "文档",
+                "name": "Atlassian 项目管理指南"
+              }
+            ],
+            "duration": "持续进行",
+            "verification": "项目看板历史记录 + 一次延期复盘的改进项。"
+          }
+        },
+        {
+          "name": "团队管理与技术负责",
+          "aliases": [
+            "团队管理",
+            "管理经验",
+            "带团队",
+            "Leader",
+            "技术负责人",
+            "团队管理经验",
+            "带人",
+            "招聘"
+          ],
+          "importance": 3,
+          "learn": {
+            "why": "资深岗位（专家/负责人）都要求能带队与做技术决策，创业与团队管理经验是加分项。",
+            "focus": "掌握目标拆解、人员培养与技术决策机制。",
+            "steps": [
+              "设计团队目标与个人目标的对齐方法并实践一个季度",
+              "建立技术决策机制（评审、ADR、责任人）并沉淀案例",
+              "做一次一对一反馈与培养计划并跟踪成长"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "《The Manager's Path》（技术管理进阶路径）"
+              },
+              {
+                "type": "文档",
+                "name": "Google 工程实践文档《How to be a good tech lead》"
+              },
+              {
+                "type": "实践",
+                "name": "沉淀一份团队运作机制文档"
+              }
+            ],
+            "duration": "持续进行",
+            "verification": "团队运作机制文档 + 目标对齐与培养的实践记录。"
+          }
+        },
+        {
+          "name": "持续学习与前沿跟进",
+          "aliases": [
+            "学习能力",
+            "技术敏感度",
+            "跟进前沿",
+            "论文阅读",
+            "SOTA",
+            "自驱",
+            "前沿技术",
+            "技术热情"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "JD 明写「持续跟进业界进展，对 model、harness、agent 有自己的理解」，这是 Agent 岗位的生存能力。",
+            "focus": "建立稳定的信息摄入与输出机制，把新知识转成可用判断。",
+            "steps": [
+              "固定信息源（arXiv、HuggingFace Papers、官方博客）与每周阅读节奏",
+              "每周写一篇简短笔记（问题、结论、能否用于当前项目）",
+              "每季度做一次技术趋势整理并在团队分享"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "arXiv cs.CL / cs.AI 与 HuggingFace Daily Papers",
+                "url": "https://huggingface.co/docs"
+              },
+              {
+                "type": "文档",
+                "name": "Anthropic / OpenAI / DeepMind 官方研究博客",
+                "url": "https://www.anthropic.com/docs"
+              },
+              {
+                "type": "实践",
+                "name": "持续输出技术周报或笔记（3 个月以上）"
+              }
+            ],
+            "duration": "持续进行",
+            "verification": "连续 12 周以上的技术笔记与一次团队分享记录。"
+          }
+        },
+        {
+          "name": "英语与技术文献阅读",
+          "aliases": [
+            "英语",
+            "English",
+            "英语读写",
+            "英语读写能力良好",
+            "英文文档",
+            "英文技术文档",
+            "口语"
+          ],
+          "importance": 3,
+          "learn": {
+            "why": "一手资料几乎都是英文，岗位标签中「英语读写能力良好」出现频次较高。",
+            "focus": "能快速读懂论文与文档并提炼可执行结论。",
+            "steps": [
+              "练习结构化读论文（问题、方法、实验、局限）并写中英对照摘要",
+              "用英文提交一次 issue 或 PR 并参与讨论",
+              "做一次英文技术分享或英文文档撰写"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "《English for Writing Research Papers》要点"
+              },
+              {
+                "type": "实践",
+                "name": "用英文在开源项目提交 issue/PR 并完成沟通"
+              },
+              {
+                "type": "文档",
+                "name": "Papers with Code 论文速读方法"
+              }
+            ],
+            "duration": "持续进行",
+            "verification": "英文技术写作样本或已合并的英文 PR/issue 讨论记录。"
+          }
+        },
+        {
+          "name": "算法与数据结构基础",
+          "aliases": [
+            "数据结构",
+            "计算机基础",
+            "计算机相关专业",
+            "计算机/软件工程",
+            "算法基础",
+            "计算机科学",
+            "软件工程相关专业"
+          ],
+          "importance": 4,
+          "learn": {
+            "why": "JD 要求「工程功底扎实，熟悉算法与数据结构，能判断 AI 给出的方案与代码是否可靠」。",
+            "focus": "保持在面试与代码评审中够用的算法功底。",
+            "steps": [
+              "系统刷题并整理模板（数组/哈希/树/图/DP），保持每周 5 题的节奏",
+              "对每个常见结构写下工程中的真实使用场景",
+              "做一次代码评审演练，能指出复杂度与边界问题"
+            ],
+            "resources": [
+              {
+                "type": "文档",
+                "name": "《算法（第 4 版）》或《labuladong 的算法小抄》"
+              },
+              {
+                "type": "实践",
+                "name": "LeetCode 高频题单（Hot 100）系统练习"
+              },
+              {
+                "type": "课程",
+                "name": "MIT 6.006 Introduction to Algorithms 公开课"
+              }
+            ],
+            "duration": "持续进行",
+            "verification": "刷题记录（题量与通过率）+ 一次代码评审的问题清单。"
+          }
+        },
+        {
+          "name": "竞赛、论文与专利成果",
+          "aliases": [
+            "竞赛",
+            "Kaggle",
+            "论文",
+            "顶会",
+            "专利",
+            "参加算法相关竞赛",
+            "发表算法相关优秀论文",
+            "获奖"
+          ],
+          "importance": 2,
+          "learn": {
+            "why": "岗位标签中明确出现「优秀开源项目经历」「发表算法相关优秀论文」「参加算法竞赛获奖」，是筛选硬信号。",
+            "focus": "把工作产出转化为可验证的外部成果。",
+            "steps": [
+              "选定一个方向产出可公开成果（论文投稿、专利撰写或 Kaggle 参赛）",
+              "把已有项目整理成可复现的评测结论或技术报告",
+              "沉淀成果清单并更新到简历与主页"
+            ],
+            "resources": [
+              {
+                "type": "实践",
+                "name": "Kaggle 入门赛（如 LLM Prompt Recovery / 文本分类赛）"
+              },
+              {
+                "type": "文档",
+                "name": "专利申请撰写规范与公开检索（CNIPA / Google Patents）"
+              },
+              {
+                "type": "文档",
+                "name": "顶会投稿指南（NeurIPS / ACL / KDD）"
+              }
+            ],
+            "duration": "3-6 个月",
+            "verification": "论文投稿、专利受理或竞赛排名等可核查成果。"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+<!doctype html><html><head><meta charset='utf-8'><style>
+@page { size: A4; margin: 0; }
+* { box-sizing: border-box; }
+html, body { background: #fff; }
+body { margin:0; font-family:"PingFang SC","Hiragino Sans GB","Heiti SC","Microsoft YaHei",sans-serif;
+       font-size:11px; color:#26282c; line-height:1.5; }
+.page { width: 210mm; min-height: 297mm; padding: 10mm 15mm 12mm; background:#fff; }
+header { display:flex; align-items:center; justify-content:space-between; gap:14px;
+         border-bottom:1.5px solid #2b3a4a; padding-bottom:8px; margin-bottom:9px; }
+.id { display:flex; align-items:baseline; gap:10px; }
+.id h1 { font-size:23px; margin:0; letter-spacing:1.5px; color:#1f2a36; }
+.id .meta { font-size:11px; color:#5b6b7b; font-weight:500; }
+.contact { font-size:10px; color:#4b5563; text-align:right; line-height:1.7; }
+.contact b { color:#26282c; }
+h2 { font-size:13px; color:#1f2a36; margin:9px 0 5px; padding-left:7px; border-left:3px solid #2b3a4a; }
+.summary { text-align:justify; margin:0; }
+.cap { margin:2px 0 0; }
+.cap p { margin:2px 0; text-align:justify; }
+.cap b { color:#1f2a36; }
+.work { margin-bottom:4px; }
+.wrow { display:flex; justify-content:space-between; align-items:baseline; }
+.wco { font-weight:700; font-size:11.5px; color:#1f2a36; }
+.wrole { color:#5b6b7b; font-size:10.3px; margin-left:8px; }
+.wdate { color:#8a94a0; font-size:9.8px; white-space:nowrap; }
+.wstack { font-size:9.6px; color:#5b6b7b; margin:1px 0 2px; }
+.desc { color:#333; margin:1px 0 3px; text-align:justify; }
+ul { margin:2px 0 4px; padding-left:16px; }
+li { margin-bottom:2px; text-align:justify; }
+li b { color:#1f2a36; }
+.item { margin-bottom:4px; }
+.item .top { display:flex; justify-content:space-between; align-items:baseline; }
+.item .ttl { font-weight:700; font-size:11.5px; color:#1f2a36; }
+.item .meta { color:#5b6b7b; font-size:10px; }
+.stack { font-size:9.6px; color:#5b6b7b; margin:1px 0 2px; }
+.edu { display:flex; justify-content:space-between; margin-bottom:3px; }
+.edu b { color:#1f2a36; }
+.other { margin-top:7px; padding-top:6px; border-top:1px solid #e5e7eb; font-size:9.8px; color:#5b6b7b; }
+</style></head><body><div class='page'>
+{{HEADER}}
+<h2>个人简介</h2>
+{{SUMMARY}}
+<h2>核心能力</h2>
+{{SKILLS}}
+<h2>核心项目经历</h2>
+{{PROJECTS}}
+<h2>工作经历</h2>
+{{WORK}}
+<h2>教育经历</h2>
+{{EDUCATION}}
+{{OTHER}}
+</div></body></html>

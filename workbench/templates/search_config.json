@@ -1,0 +1,26 @@
+{
+ "cities": [],
+ "keywords": [],
+ "salary": {
+  "min": 0,
+  "max": 0,
+  "unit": "K"
+ },
+ "activity_preference": [
+  "刚刚活跃",
+  "今日活跃",
+  "3日内活跃"
+ ],
+ "exclude_companies": [],
+ "batch_size": 10,
+ "throttle": {
+  "nav_seconds": 13,
+  "action_seconds": 4,
+  "job_interval_seconds": [
+   18,
+   32
+  ]
+ },
+ "_note": "城市只填名字即可，城市码由系统自动补全（workbench/cities.json）",
+ "recruit_types": []
+}

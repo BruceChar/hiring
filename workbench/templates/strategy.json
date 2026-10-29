@@ -1,0 +1,45 @@
+{
+ "enabled": true,
+ "mode": "batch",
+ "mode_note": "batch=按批手动/半自动执行；schedule=按周期自动执行",
+ "cadence": {
+  "type": "daily",
+  "times": [
+   "09:30",
+   "14:00"
+  ],
+  "weekdays": [
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "interval_hours": 0
+ },
+ "batch_size": 10,
+ "daily_limit": 20,
+ "time_windows": [
+  {
+   "from": "09:00",
+   "to": "12:00"
+  },
+  {
+   "from": "14:00",
+   "to": "18:00"
+  }
+ ],
+ "require_approval": true,
+ "auto_apply": false,
+ "min_reply_rate": 0.15,
+ "pause_after_consecutive_no_reply": 15,
+ "dedupe_days": 90,
+ "per_company_cooldown_days": 30,
+ "max_per_company": 1,
+ "stop_on_risk_control": true,
+ "review_gate": {
+  "deterministic": true,
+  "independent_agent": true
+ },
+ "updatedAt": "2026-10-01T10:50:15"
+}
